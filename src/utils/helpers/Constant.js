@@ -1,0 +1,15 @@
+export default {
+  // BASE_URL: 'https://daa2-103-52-220-114.ngrok-free.app/api',
+  // BASE_URL: 'https://dokanakeg.com/api',
+   BASE_URL: 'https://tasteeq.com/api',
+  TOKEN: 'TOKEN',
+  NAME: 'NAME',
+  TYPE: 'TYPE',
+  LOGIN_CREDENTIAL: 'LOGIN_CREDENTIAL',
+  PASSVALUE: 'PASSVALUE',
+  CATEID: '',
+  SUBCATEID: '',
+  PARENT: '',
+  // GOOGLE_API_KEY: 'AIzaSyAmdg38dL4Qg4gvz-1Ut7DOoy_TnFVb34A',
+  USER_TYPE:'USER_TYPE',
+};
