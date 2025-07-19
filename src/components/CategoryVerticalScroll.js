@@ -36,7 +36,10 @@ const CategoryVerticalScroll = ({ dataSet = [], type = '', itemId = '' }) => {
                     categoryName: subItem?.name,
                     itemId: subItem?.id,
                   })
-                : navigation.navigate('GroceryProductList');
+                : navigation.navigate('GroceryProductList', {
+                    categoryName: subItem?.name,
+                    itemId: subItem?.id,
+                  });
             }}
             key={subItem.id}
             style={styles.item}
@@ -53,7 +56,7 @@ const CategoryVerticalScroll = ({ dataSet = [], type = '', itemId = '' }) => {
             >
               <Image
                 resizeMode="cover"
-               source={{uri: subItem.image_url}}
+                source={{ uri: subItem.image_url }}
                 style={styles.image}
               />
             </View>
@@ -77,7 +80,7 @@ const styles = StyleSheet.create({
     height: normalize(90),
   },
   image: {
-   width: normalize(55),
+    width: normalize(55),
     height: normalize(55),
     borderRadius: normalize(55),
   },

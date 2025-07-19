@@ -187,8 +187,8 @@ const AddButton = ({
             width: normalize(80),
             borderRadius: normalize(5),
             borderWidth: normalize(1),
-            borderColor: COLORS.red,
-            backgroundColor: COLORS.white,
+            borderColor: COLORS.themeViolet,
+            backgroundColor: COLORS.blue,
             justifyContent: 'center',
             alignItems: 'center',
             position: position,
@@ -200,7 +200,7 @@ const AddButton = ({
             style={{
               fontFamily: FONTS.PoppinsSemiBold,
               fontSize: normalize(10),
-              color: COLORS.red,
+              color: COLORS.themeViolet,
             }}>
             ADD
           </Text>
@@ -215,8 +215,8 @@ const AddButton = ({
                 width: normalize(80),
                 borderRadius: normalize(5),
                 borderWidth: normalize(1),
-                borderColor: COLORS.red,
-                backgroundColor: COLORS.white,
+                borderColor: COLORS.themeViolet,
+                backgroundColor: COLORS.blue,
                 justifyContent: 'center',
                 alignItems: 'center',
                 position: position,
@@ -228,7 +228,7 @@ const AddButton = ({
                 style={{
                   fontFamily: FONTS.PoppinsSemiBold,
                   fontSize: normalize(10),
-                  color: COLORS.red,
+                  color: COLORS.themeViolet,
                 }}>
                 ADD
               </Text>
@@ -240,8 +240,8 @@ const AddButton = ({
                 width: normalize(80),
                 borderRadius: normalize(5),
                 borderWidth: normalize(1),
-                borderColor: COLORS.red,
-                backgroundColor: COLORS.white,
+                borderColor: COLORS.themeViolet,
+                backgroundColor: COLORS.blue,
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 position: position,
@@ -262,7 +262,7 @@ const AddButton = ({
                   style={{
                     fontFamily: FONTS.PoppinsSemiBold,
                     fontSize: normalize(12),
-                    color: COLORS.red,
+                    color: COLORS.themeViolet,
                   }}>
                   -
                 </Text>
@@ -273,7 +273,7 @@ const AddButton = ({
                 style={{
                   fontFamily: FONTS.PoppinsSemiBold,
                   fontSize: normalize(11),
-                  color: COLORS.red,
+                  color: COLORS.themeViolet,
                 }}>
                 {quantity}
               </Text>
@@ -291,7 +291,7 @@ const AddButton = ({
                   style={{
                     fontFamily: FONTS.PoppinsSemiBold,
                     fontSize: normalize(12),
-                    color: COLORS.red,
+                    color: COLORS.themeViolet,
                   }}>
                   +
                 </Text>

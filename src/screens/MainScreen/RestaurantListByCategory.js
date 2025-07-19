@@ -24,17 +24,42 @@ import OtherHeader from '../../components/OtherHeader';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 import connectionrequest from '../../utils/helpers/NetInfo';
+import {useDispatch, useSelector} from 'react-redux';
+import {restaurentListRequest} from '../../redux/reducer/ProfileReducer';
 import ShowAlert from '../../utils/helpers/ShowAlert';
 import {
   getCurrentLocation,
   getStoredLocation,
 } from '../../components/LocationService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let status = '';
 const RestaurantListByCategory = props => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const ProfileReducer = useSelector(state => state.ProfileReducer);
   const {categoryName} = props?.route?.params;
   const itemId = props?.route?.params?.itemId;
+  const [nearbyRestaurentItems, setnearbyRestaurentItems] = useState([]);
+  const [local_cartData, setlocal_CartData] = useState([]);
+
+  useEffect(() => {
+    const fetchCartData = async () => {
+      try {
+        const data = await AsyncStorage.getItem('cart');
+        if (data !== null) {
+          const parsed = JSON.parse(data);
+          setlocal_CartData(parsed);
+        } else {
+          setlocal_CartData([]);
+        }
+      } catch (err) {
+        console.error('Error reading cart:', err);
+      }
+    };
+
+    fetchCartData();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -46,95 +71,37 @@ const RestaurantListByCategory = props => {
   const location = getStoredLocation(); // access anytime later
   // console.log('Stored Location:', location);
 
+  useEffect(() => {
+    connectionrequest()
+      .then(() => {
+        dispatch(
+          restaurentListRequest({
+            category_id: itemId,
+            store_category_flag: 'restaurant',
+          }),
+        );
+      })
+      .catch(err => {
+        console.log(err);
+        ShowAlert('Please connect to internet');
+      });
+  }, []);
 
-  const nearbyRestaurentItems = [
-    {
-      id: '1',
-      name: 'BawArchi Family Restaurant',
-      image: IMAGES.foodMid3,
-      price: '₹50',
-      off: '10%',
-      time: '30-35 mins',
-      rateing: '4.5',
-      rateingAmount: '9.8+',
-      details: `Mutton Kacchi Biryani, Nawabi Chicken, Rice
-  Pudding, Masala Cold Drink, Kiwi Mojito, Chicken
-  Reshmi Masala Mutton Kacchi Biryani, Nawabi Chicken, Rice
-  Pudding, Masala Cold Drink, Kiwi Mojito, Chicken
-  Reshmi Masala...`,
-      address: 'Opp bijoygarh College, Jadavpur, 1.3 km',
-    },
-    {
-      id: '2',
-      name: 'Tandoori Hut',
-      image: IMAGES.foodMid3,
-      price: '₹100',
-      off: '15%',
-      time: '25-30 mins',
-      rateing: '4.0',
-      rateingAmount: '9.8+',
-      details: `Mutton Kacchi Biryani, Nawabi Chicken, Rice
-  Pudding, Masala Cold Drink, Kiwi Mojito, Chicken
-  Reshmi Masala...`,
-      address: 'Opp bijoygarh College, Jadavpur, 1.3 km',
-    },
-    {
-      id: '3',
-      name: 'Spice Junction',
-      image: IMAGES.foodMid1,
-      price: '₹200',
-      off: '20%',
-      time: '20-25 mins',
-      rateing: '4.8',
-      rateingAmount: '9.8+',
-      details: `Mutton Kacchi Biryani, Nawabi Chicken, Rice
-  Pudding, Masala Cold Drink, Kiwi Mojito, Chicken
-  Reshmi Masala...`,
-      address: 'Opp bijoygarh College, Jadavpur, 1.3 km',
-    },
-    {
-      id: '4',
-      name: 'Tandoori Hut',
-      image: IMAGES.foodMid2,
-      price: '₹150',
-      off: '10%',
-      time: '30-35 mins',
-      rateing: '4.5',
-      rateingAmount: '9.8+',
-      details: `Mutton Kacchi Biryani, Nawabi Chicken, Rice
-  Pudding, Masala Cold Drink, Kiwi Mojito, Chicken
-  Reshmi Masala...`,
-      address: 'Opp bijoygarh College, Jadavpur, 1.3 km',
-    },
-    {
-      id: '5',
-      name: 'Spice Junction',
-      image: IMAGES.foodMid1,
-      price: '₹120',
-      off: '15%',
-      time: '25-30 mins',
-      rateing: '4.0',
-      rateingAmount: '9.8+',
-      details: `Mutton Kacchi Biryani, Nawabi Chicken, Rice
-  Pudding, Masala Cold Drink, Kiwi Mojito, Chicken
-  Reshmi Masala...`,
-      address: 'Opp bijoygarh College, Jadavpur, 1.3 km',
-    },
-    {
-      id: '6',
-      name: 'Khana Khazana',
-      image: IMAGES.foodMid2,
-      price: '₹80',
-      off: '20%',
-      time: '20-25 mins',
-      rateing: '4.8',
-      rateingAmount: '9.8+',
-      details: `Mutton Kacchi Biryani, Nawabi Chicken, Rice
-  Pudding, Masala Cold Drink, Kiwi Mojito, Chicken
-  Reshmi Masala...`,
-      address: 'Opp bijoygarh College, Jadavpur, 1.3 km',
-    },
-  ];
+  if (status == '' || ProfileReducer.status != status) {
+    switch (ProfileReducer.status) {
+      case 'Profile/restaurentListRequest':
+        status = ProfileReducer.status;
+        break;
+      case 'Profile/restaurentListSuccess':
+        status = ProfileReducer.status;
+        setnearbyRestaurentItems(ProfileReducer?.restaurentListResponse?.data);
+        break;
+      case 'Profile/restaurentListFailure':
+        status = ProfileReducer.status;
+        // dispatch(logoutRequest())
+        break;
+    }
+  }
 
   const renderItem = ({item}) => (
     <TouchableOpacity
@@ -173,7 +140,7 @@ const RestaurantListByCategory = props => {
 
         <View style={styles.dealVw}>
           <Text style={styles.dealTxt}>FLAT DEAL</Text>
-          <Text style={styles.dealTxt2}>{item.price} OFF</Text>
+          <Text style={styles.dealTxt2}>{item.price}10% OFF</Text>
         </View>
       </View>
       <View
@@ -194,7 +161,7 @@ const RestaurantListByCategory = props => {
             style={{height: normalize(13), width: normalize(13)}}
           />
           <Text numberOfLines={1} style={[styles.timeTxt]}>
-            {item.off} ◎ {item.time}
+            10% ◎ 30-35 mins
           </Text>
         </View>
 
@@ -233,7 +200,7 @@ const RestaurantListByCategory = props => {
 
   return (
     <>
-     <MyStatusBar backgroundColor={COLORS.themeGreen} />
+      <MyStatusBar backgroundColor={COLORS.red} />
       <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
         <KeyboardAwareScrollView
           showsVerticalScrollIndicator={false}
@@ -263,6 +230,63 @@ const RestaurantListByCategory = props => {
           </View>
         </KeyboardAwareScrollView>
       </SafeAreaView>
+      {/* Floating View Cart */}
+      {local_cartData?.length != 0 ? (
+        <View style={styles.floatingCart}>
+          <View style={styles.cartDetails}>
+            <View style={styles.imagePlaceholder}>
+              <Image
+                source={{uri: local_cartData[0]?.image}}
+                resizeMode="contain"
+                style={{height: '100%', width: '100%'}}
+              />
+            </View>
+            {local_cartData?.length != 1 ? (
+              <View
+                style={[
+                  styles.imagePlaceholder,
+                  {
+                    position: 'absolute',
+                    right: normalize(50),
+                  },
+                ]}>
+                <Image
+                  source={{uri: local_cartData[1]?.image}}
+                  resizeMode="contain"
+                  style={{height: '100%', width: '100%'}}
+                />
+              </View>
+            ) : null}
+            <Text style={styles.cartText}>
+              View cart{'\n'}
+              {local_cartData?.length}{' '}
+              {local_cartData?.length == 1 ? 'Item' : 'Items'}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => {
+              navigation?.navigate('BottomTab', {
+                screen: 'Tab4StackScreen',
+                params: {
+                  screen: 'Tab4',
+                },
+              });
+            }}
+            style={styles.cartButton}>
+            <Image
+              source={IMAGES.downarrow}
+              resizeMode="contain"
+              style={{
+                height: normalize(10),
+                width: normalize(10),
+                tintColor: COLORS.white,
+                transform: [{rotate: '270deg'}],
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </>
   );
 };
@@ -284,20 +308,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: normalize(13),
     fontFamily: FONTS.PoppinsSemiBold,
-    color: COLORS.black,
+    color: COLORS.themeGreen,
   },
   timeTxt: {
     textAlign: 'left',
     fontSize: normalize(10),
     fontFamily: FONTS.PoppinsBold,
-    color: COLORS.black,
+    color: COLORS.themeViolet,
     marginLeft: normalize(5),
   },
   desc: {
     textAlign: 'left',
     fontSize: normalize(10),
     fontFamily: FONTS.PoppinsRegular,
-    color: COLORS.black,
+    color: COLORS.themeViolet,
     marginLeft: normalize(5),
   },
   offpriceTxt: {
@@ -347,6 +371,52 @@ const styles = StyleSheet.create({
   dealTxt2: {
     fontFamily: FONTS.PoppinsBold,
     fontSize: normalize(11),
-    color: COLORS.yellow,
+    color: COLORS.blue,
   },
+  ///////////////
+    floatingCart: {
+       position: 'absolute',
+       bottom: normalize(50),
+       // left: normalize(50),
+       // right: normalize(50),
+       width: normalize(130),
+       backgroundColor: COLORS.blue,
+       borderRadius: normalize(50),
+       flexDirection: 'row',
+       alignItems: 'center',
+       padding: normalize(5),
+       elevation: normalize(10),
+       alignSelf: 'center',
+     },
+     cartDetails: {
+       flexDirection: 'row',
+       alignItems: 'center',
+       flex: 1,
+     },
+     imagePlaceholder: {
+       width: normalize(35),
+       height: normalize(35),
+       borderRadius: normalize(20),
+       marginRight: normalize(10),
+       overflow: 'hidden',
+       borderWidth: 1,
+       borderColor: COLORS.bordergrey,
+     },
+     cartText: {
+       color: COLORS.themeViolet,
+   
+       fontSize: normalize(10),
+       fontFamily: FONTS.PoppinsSemiBold,
+     },
+     cartButton: {
+       backgroundColor: COLORS.themeGreen,
+       borderRadius: normalize(20),
+       padding: normalize(5),
+       justifyContent: 'center',
+       alignItems: 'center',
+     },
+     cartButtonText: {
+       color: COLORS.themeGreen,
+       fontSize: normalize(16),
+     },
 });

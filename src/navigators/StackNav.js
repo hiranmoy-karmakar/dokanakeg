@@ -19,6 +19,11 @@ import RestaurantListByCategory from '../screens/MainScreen/RestaurantListByCate
 import Details from '../screens/MainScreen/Details';
 import {useSelector} from 'react-redux';
 import Intro from '../screens/Default/Intro';
+import RestaurantFoodList from '../screens/MainScreen/RestaurantFoodList';
+import AddressChange from '../screens/MainScreen/AddressChange';
+import RestaurentOrder from '../screens/MainScreen/RestaurentOrder';
+import GroceryOrder from '../screens/MainScreen/GroceryOrder';
+import MyAccount from '../screens/MainScreen/MyAccount';
 
 export default function StackNav() {
   const [showSplash, setShowSplash] = useState(true);
@@ -45,6 +50,13 @@ export default function StackNav() {
     GroceryProductList: GroceryProductList,
     RestaurantListByCategory: RestaurantListByCategory,
     Details: Details,
+    RestaurantFoodList: RestaurantFoodList,
+    AddressChange: AddressChange,
+    // SuccessScreen: SuccessScreen,
+    RestaurentOrder: RestaurentOrder,
+    GroceryOrder: GroceryOrder,
+    // RestaurantOrderDetails: RestaurantOrderDetails,
+    MyAccount: MyAccount,
   };
 
   if (showSplash || AuthReducer?.isLoading) {

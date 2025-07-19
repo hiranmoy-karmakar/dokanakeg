@@ -26,7 +26,7 @@ const RestaurantInfoCard = ({data}) => {
         width: normalize(300),
         alignSelf: 'center',
         borderRadius: normalize(10),
-        backgroundColor: COLORS.bgGrey,
+        backgroundColor: COLORS.themeGreen,
         justifyContent: 'space-between',
         overflow: 'hidden',
       }}>
@@ -49,7 +49,7 @@ const RestaurantInfoCard = ({data}) => {
             style={{
               fontFamily: FONTS.PoppinsSemiBold,
               fontSize: normalize(15),
-              color: COLORS.black,
+              color: COLORS.themeViolet,
             }}>
             {data?.name}
           </Text>
@@ -57,7 +57,7 @@ const RestaurantInfoCard = ({data}) => {
             style={{
               fontFamily: FONTS.PoppinsMedium,
               fontSize: normalize(10),
-              color: COLORS.black,
+              color: COLORS.themeViolet,
             }}>
             40-45 mins{'   '}•{'   '}2.2 km
           </Text>
@@ -66,7 +66,7 @@ const RestaurantInfoCard = ({data}) => {
             style={{
               fontFamily: FONTS.PoppinsMedium,
               fontSize: normalize(10),
-              color: COLORS.black,
+              color: COLORS.deepGrey,
             }}>
             {data?.address}
           </Text>
@@ -77,7 +77,7 @@ const RestaurantInfoCard = ({data}) => {
               borderRadius: normalize(5),
               backgroundColor: COLORS.lightGreen,
               borderWidth: 1,
-              borderColor: COLORS.green,
+              borderColor: COLORS.themeGreen,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
@@ -85,7 +85,7 @@ const RestaurantInfoCard = ({data}) => {
               style={{
                 fontFamily: FONTS.PoppinsSemiBold,
                 fontSize: normalize(10),
-                color: COLORS.green,
+                color: COLORS.themeGreen,
               }}>
              {data?.is_open == true ? 'Open' : 'Close'} 
             </Text>
@@ -101,7 +101,7 @@ const RestaurantInfoCard = ({data}) => {
             style={{
               height: normalize(20),
               width: normalize(45),
-              backgroundColor: COLORS.green,
+              backgroundColor: COLORS.themeGreen,
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
@@ -113,14 +113,14 @@ const RestaurantInfoCard = ({data}) => {
                 height: normalize(9),
                 width: normalize(9),
                 marginRight: normalize(3),
-                tintColor: COLORS.white,
+                tintColor: COLORS.themeViolet,
               }}
             />
             <Text
               style={{
                 fontFamily: FONTS.PoppinsSemiBold,
                 fontSize: normalize(12),
-                color: COLORS.white,
+                color: COLORS.themeViolet,
               }}>
               4.2
             </Text>
@@ -129,7 +129,7 @@ const RestaurantInfoCard = ({data}) => {
             style={{
               fontFamily: FONTS.PoppinsMedium,
               fontSize: normalize(7),
-              color: COLORS.deepGrey,
+              color: COLORS.themeViolet,
               marginTop: normalize(5),
             }}>
             50k Ratings
@@ -140,7 +140,7 @@ const RestaurantInfoCard = ({data}) => {
         style={{
           height: normalize(35),
           width: normalize(300),
-          backgroundColor: COLORS.midYellow,
+          backgroundColor: COLORS.blue,
           flexDirection: 'row',
           alignItems: 'center',
           paddingLeft: normalize(10),
@@ -151,14 +151,14 @@ const RestaurantInfoCard = ({data}) => {
           style={{
             height: normalize(14),
             width: normalize(14),
-            tintColor: COLORS.yellow,
+            tintColor: COLORS.themeViolet,
           }}
         />
         <Text
           style={{
             fontFamily: FONTS.PoppinsSemiBold,
             fontSize: normalize(10),
-            color: COLORS.black,
+            color: COLORS.themeViolet,
             marginLeft: normalize(5),
           }}>
           30-35 mins
@@ -167,7 +167,7 @@ const RestaurantInfoCard = ({data}) => {
           style={{
             fontFamily: FONTS.PoppinsRegular,
             fontSize: normalize(10),
-            color: COLORS.black,
+            color: COLORS.themeViolet,
             marginLeft: normalize(5),
           }}>
           Delivery time

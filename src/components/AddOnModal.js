@@ -167,7 +167,7 @@ const AddOnModal = ({
         propagateSwipe>
         <View
           style={{
-            backgroundColor: COLORS.white,
+            backgroundColor: COLORS.themeGreen,
             borderTopRightRadius: normalize(12),
             borderTopLeftRadius: normalize(12),
             overflow: 'hidden',
@@ -176,7 +176,7 @@ const AddOnModal = ({
           <View
             style={{
               height: normalize(50),
-              backgroundColor: COLORS.bgGrey,
+              backgroundColor: COLORS.blue,
 
               flexDirection: 'row',
               alignItems: 'center',
@@ -204,7 +204,7 @@ const AddOnModal = ({
                 numberOfLines={1}
                 style={{
                   fontSize: normalize(15),
-                  color: COLORS.black,
+                  color: COLORS.themeViolet,
                   fontFamily: FONTS.PoppinsMedium,
                   textTransform: 'capitalize',
                   marginLeft: normalize(10),
@@ -229,7 +229,7 @@ const AddOnModal = ({
               return (
                 <TouchableOpacity
                   key={index}
-                  style={{backgroundColor: COLORS.white}}
+                  style={{backgroundColor: COLORS.themeGreen}}
                   onPress={() => toggleSelection(item.id)}>
                   <View
                     style={{
@@ -254,7 +254,7 @@ const AddOnModal = ({
                         style={{
                           fontFamily: FONTS.PoppinsSemiBold,
                           fontSize: normalize(14),
-                          color: COLORS.black,
+                          color: COLORS.themeViolet,
                           marginLeft: normalize(10),
                         }}>
                         {item.title}
@@ -263,7 +263,7 @@ const AddOnModal = ({
                     <Text
                       style={{
                         fontSize: normalize(14),
-                        color: COLORS.black,
+                        color: COLORS.themeViolet,
                         marginLeft: normalize(10),
                       }}>
                       ₹ {item.price}
@@ -280,7 +280,7 @@ const AddOnModal = ({
               width: '100%',
               flexDirection: 'row',
               justifyContent: 'space-evenly',
-              backgroundColor: COLORS.bgGrey,
+              backgroundColor: COLORS.themeGreen,
               alignItems: 'center',
             }}>
             <View
@@ -289,8 +289,8 @@ const AddOnModal = ({
                 width: normalize(80),
                 borderRadius: normalize(5),
                 borderWidth: normalize(1),
-                borderColor: COLORS.red,
-                backgroundColor: COLORS.white,
+                borderColor: COLORS.themeViolet,
+                backgroundColor: COLORS.blue,
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 alignSelf: 'center',
@@ -309,7 +309,7 @@ const AddOnModal = ({
                   style={{
                     fontFamily: FONTS.PoppinsSemiBold,
                     fontSize: normalize(12),
-                    color: COLORS.red,
+                    color: COLORS.themeViolet,
                   }}>
                   -
                 </Text>
@@ -320,7 +320,7 @@ const AddOnModal = ({
                 style={{
                   fontFamily: FONTS.PoppinsSemiBold,
                   fontSize: normalize(11),
-                  color: COLORS.red,
+                  color: COLORS.themeViolet,
                 }}>
                 {quantity}
               </Text>
@@ -338,7 +338,7 @@ const AddOnModal = ({
                   style={{
                     fontFamily: FONTS.PoppinsSemiBold,
                     fontSize: normalize(12),
-                    color: COLORS.red,
+                    color: COLORS.themeViolet,
                   }}>
                   +
                 </Text>
@@ -348,7 +348,7 @@ const AddOnModal = ({
               onPress={handleAddToCart}
               style={{
                 height: normalize(35),
-                backgroundColor: COLORS.green,
+                backgroundColor: COLORS.blue,
                 borderRadius: normalize(10),
                 paddingHorizontal: normalize(50),
                 justifyContent: 'center',
@@ -359,7 +359,7 @@ const AddOnModal = ({
                 style={{
                   fontFamily: FONTS.PoppinsSemiBold,
                   fontSize: normalize(12),
-                  color: COLORS.white,
+                  color: COLORS.themeViolet,
                 }}>
                 Add Item | {totalPrice}
               </Text>
@@ -368,9 +368,9 @@ const AddOnModal = ({
                 style={{
                   fontFamily: FONTS.PoppinsSemiBold,
                   fontSize: normalize(12),
-                  color: COLORS.white,
+                  color: COLORS.bgGrey,
                   textDecorationLine: 'line-through',
-                  textDecorationColor: COLORS.white,
+                  textDecorationColor: COLORS.themeViolet,
                   marginLeft: normalize(5),
                 }}>
                 {cutPrice}
@@ -388,7 +388,7 @@ export default AddOnModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.themeGreen,
   },
   modalContainer: {
     justifyContent: 'flex-end',
