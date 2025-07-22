@@ -93,11 +93,18 @@ export const IMAGES = {
   vegetablesmall: require('../assets/images/vegetablesmall.png'),
   tomato: require('../assets/images/tomato.png'),
   add: require('../assets/images/add.png'),
+    locationadd: require('../assets/images/locationadd.png'),
+  homeaddress: require('../assets/images/homeaddress.png'),
+  workaddress: require('../assets/images/workaddress.png'),
+  otheraddress: require('../assets/images/otheraddress.png'),
+  edit: require('../assets/images/edit.png'),
 };
 
 export const LOTTIE = {
   nodatafound: require('../assets/lottie/nodatafound.json'),
   nodatafound2: require('../assets/lottie/nodatafound2.json'),
+  success: require('../assets/lottie/Success.json'),
+  congratulation: require('../assets/lottie/congratulation.json'),
 };
 
 export const FONTS = {

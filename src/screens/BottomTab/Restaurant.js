@@ -30,32 +30,64 @@ import { groceryCategoryData } from '../../components/StaticData';
 import VerticalRestaurantList from '../../components/VerticalRestaurantList';
 import HomeBottomBanner from '../../components/HomeBottomBanner';
 import PopularRestaurantScroll from '../../components/PopularRestaurantScroll';
-import {
-  foodCrousel,
-  foodCategoryData,
-  restaurentItems,
-  nearbyRestaurentItems,
-} from '../../../StaticDataset';
+import { useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import SearchSuggestion from '../../components/SearchSuggestion';
 
 const Restaurant = () => {
   const navigation = useNavigation();
+  const ProfileReducer = useSelector(state => state.ProfileReducer);
+  const restaurentItemsHome = ProfileReducer?.hotSellingFoodResponse?.data;
+  const nearbyRestaurentItemsHome =
+    ProfileReducer?.popularRestaurantResponse?.data;
+  const bannerData =
+    ProfileReducer?.bannerResponse?.data?.restaurant_header_banner;
+  const bottombannerData =
+    ProfileReducer?.bannerResponse?.data?.restaurant_footer_banner;
+  const restaurentItems = ProfileReducer?.popularRestaurantResponse?.data;
+  const topBannerImageLinksArray = bannerData?.map((item, index) => ({
+    id: index + 1,
+    image: `${item?.image_link}`,
+  }));
+  const bottomBannerImageLinksArray = bottombannerData?.map((item, index) => ({
+    id: index + 1,
+    image: `${item?.image_link}`,
+  }));
+
+  const foodCategory = ProfileReducer?.restaurentCategoryResponse;
+  const mainRestaurantCategories = foodCategory?.filter(
+    item => item?.parent_id === null,
+  );
+
+  const [local_cartData, setlocal_CartData] = useState([]);
+
+  useEffect(() => {
+    const fetchCartData = async () => {
+      try {
+        const data = await AsyncStorage.getItem('cart');
+        if (data !== null) {
+          const parsed = JSON.parse(data);
+          setlocal_CartData(parsed);
+        } else {
+          setlocal_CartData([]);
+        }
+      } catch (err) {
+        console.error('Error reading cart:', err);
+      }
+    };
+
+    fetchCartData();
+  }, []);
 
   return (
     <>
       <MyStatusBar backgroundColor={COLORS.themeGreen} />
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
         <HomeHeader />
-        <TouchableOpacity style={styles.searchContainer}>
-          <Image
-            source={IMAGES.search}
-            resizeMode="contain"
-            style={styles.searchIcon}
-          />
-          <Text style={styles.searchText}>Search For</Text>
-        </TouchableOpacity>
+         <SearchSuggestion />
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.crouselVw}>
-            <CustomCarousel originalData={foodCrousel} />
+            <CustomCarousel originalData={topBannerImageLinksArray} />
           </View>
 
           <View style={{ backgroundColor: COLORS.lightYellow }}>
@@ -65,7 +97,9 @@ const Restaurant = () => {
               </Text>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('RestaurantCategory');
+                  navigation.navigate('RestaurantCategory', {
+                    mainRestaurantCategories: mainRestaurantCategories,
+                  });
                 }}
               >
                 <Text numberOfLines={1} style={styles.seeall}>
@@ -81,7 +115,10 @@ const Restaurant = () => {
                 marginTop: normalize(15),
               }}
             >
-              <CategoryVerticalScroll dataSet={foodCategoryData} />
+              <CategoryVerticalScroll
+                dataSet={mainRestaurantCategories}
+                type="restaurant"
+              />
             </View>
           </View>
 
@@ -89,30 +126,51 @@ const Restaurant = () => {
             <Text numberOfLines={1} style={styles.categoryTxt}>
               Popular Restaurants
             </Text>
-            <TouchableOpacity>
-              <Text numberOfLines={1} style={styles.seeall}>
-                See all
-              </Text>
-            </TouchableOpacity>
+            {/* <TouchableOpacity>
+              <Image
+                source={IMAGES.backarrow}
+                resizeMode="contain"
+                style={{height: normalize(22), width: normalize(22)}}
+              />
+            </TouchableOpacity> */}
           </View>
-          <View style={{ marginTop: normalize(15) }}>
+
+          <View
+            style={{
+              width: normalize(320),
+              alignSelf: 'center',
+              marginTop: normalize(15),
+            }}
+          >
             <PopularRestaurantScroll fullData={restaurentItems} />
           </View>
           <View style={styles.categoryVw}>
             <Text numberOfLines={1} style={styles.categoryTxt}>
               Hot Selling Items
             </Text>
-            <TouchableOpacity>
-              <Text numberOfLines={1} style={styles.seeall}>
-                See all
-              </Text>
-            </TouchableOpacity>
+            {/* <TouchableOpacity>
+              <Image
+                source={IMAGES.backarrow}
+                resizeMode="contain"
+                style={{height: normalize(22), width: normalize(22)}}
+              />
+            </TouchableOpacity> */}
           </View>
-          <View style={{ marginTop: normalize(15) }}>
-            <FoodItemsVerticalScroll fullData={restaurentItems} />
+
+          <View
+            style={{
+              width: normalize(320),
+              alignSelf: 'center',
+              marginTop: normalize(15),
+            }}
+          >
+            <FoodItemsVerticalScroll
+              fullData={restaurentItemsHome}
+              onCartUpdate={setlocal_CartData}
+            />
           </View>
           <View style={styles.crouselVw}>
-            <CustomCarousel originalData={foodCrousel} />
+            <CustomCarousel originalData={bottomBannerImageLinksArray} />
           </View>
 
           <View style={styles.categoryVw}>
@@ -121,44 +179,84 @@ const Restaurant = () => {
             </Text>
           </View>
 
-          <VerticalRestaurantList fullData={nearbyRestaurentItems} />
+          <View
+            style={{
+              width: normalize(320),
+              alignSelf: 'center',
+              marginTop: normalize(15),
+            }}
+          >
+            <VerticalRestaurantList fullData={nearbyRestaurentItemsHome} />
+          </View>
           <HomeBottomBanner marginBottom={15} />
         </KeyboardAwareScrollView>
       </SafeAreaView>
+
+      {/* Floating View Cart */}
+      {local_cartData?.length != 0 ? (
+        <View style={styles.floatingCart}>
+          <View style={styles.cartDetails}>
+            <View style={styles.imagePlaceholder}>
+              <Image
+                source={{ uri: local_cartData[0]?.image }}
+                resizeMode="contain"
+                style={{ height: '100%', width: '100%' }}
+              />
+            </View>
+            {local_cartData?.length != 1 ? (
+              <View
+                style={[
+                  styles.imagePlaceholder,
+                  {
+                    position: 'absolute',
+                    right: normalize(50),
+                  },
+                ]}
+              >
+                <Image
+                  source={{ uri: local_cartData[1]?.image }}
+                  resizeMode="contain"
+                  style={{ height: '100%', width: '100%' }}
+                />
+              </View>
+            ) : null}
+            <Text style={styles.cartText}>
+              View cart{'\n'}
+              {local_cartData?.length}{' '}
+              {local_cartData?.length == 1 ? 'Item' : 'Items'}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => {
+              navigation?.navigate('BottomTab', {
+                screen: 'Tab4StackScreen',
+                params: {
+                  screen: 'Tab4',
+                },
+              });
+            }}
+            style={styles.cartButton}
+          >
+            <Image
+              source={IMAGES.downarrow}
+              resizeMode="contain"
+              style={{
+                height: normalize(10),
+                width: normalize(10),
+                tintColor: COLORS.white,
+                transform: [{ rotate: '270deg' }],
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </>
   );
 };
 
 export default Restaurant;
 const styles = StyleSheet.create({
-  searchContainer: {
-    height: normalize(40),
-    width: normalize(300),
-    alignSelf: 'center',
-    marginTop: normalize(5),
-    borderRadius: normalize(30),
-    backgroundColor: COLORS.themeGreen,
-    shadowColor: COLORS.deepGrey,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: Platform.OS == 'ios' ? 0.2 : 0.7,
-    shadowRadius: 4,
-    elevation: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingHorizontal: normalize(15),
-  },
-  searchText: {
-    fontFamily: FONTS.PoppinsRegular,
-    fontSize: normalize(11),
-    color: COLORS.white,
-    marginLeft: normalize(10),
-  },
-  searchIcon: {
-    height: normalize(18),
-    width: normalize(18),
-    tintColor: COLORS.themeViolet,
-  },
   categoryVw: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -169,20 +267,67 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(15),
   },
   categoryTxt: {
-    fontFamily: FONTS.PoppinsSemiBold,
+    fontFamily: FONTS.PoppinsMedium,
     fontSize: normalize(13),
     color: COLORS.themeViolet,
+  },
+  crouselVw: {
+    marginTop: normalize(10),
+    height: normalize(180),
+    width: normalize(320),
+    alignSelf: 'center',
+    backgroundColor: COLORS.white,
   },
   seeall: {
     fontFamily: FONTS.PoppinsMedium,
     fontSize: normalize(11),
     color: COLORS.themeViolet,
   },
-  crouselVw: {
-    marginTop: normalize(15),
-    height: normalize(180),
-    width: normalize(320),
-    alignSelf: 'center',
-    backgroundColor: COLORS.white,
-  },
+  ///////////////
+   ///////////////
+    floatingCart: {
+      position: 'absolute',
+      bottom: normalize(20),
+      // left: normalize(50),
+      // right: normalize(50),
+      width: normalize(130),
+      backgroundColor: COLORS.blue,
+      borderRadius: normalize(50),
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: normalize(5),
+      elevation: normalize(10),
+      alignSelf: 'center',
+    },
+    cartDetails: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    imagePlaceholder: {
+      width: normalize(35),
+      height: normalize(35),
+      borderRadius: normalize(20),
+      marginRight: normalize(10),
+      overflow: 'hidden',
+      borderWidth: 1,
+      borderColor: COLORS.bordergrey,
+    },
+    cartText: {
+      color: COLORS.themeViolet,
+  
+      fontSize: normalize(10),
+      fontFamily: FONTS.PoppinsSemiBold,
+    },
+    cartButton: {
+      backgroundColor: COLORS.themeGreen,
+      borderRadius: normalize(20),
+      padding: normalize(5),
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    cartButtonText: {
+      color: COLORS.themeGreen,
+      fontSize: normalize(16),
+    },
 });

@@ -14,11 +14,11 @@ import {
   Animated,
   FlatList,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import HomeHeader from '../../components/HomeHeader';
 import MyStatusBar from '../../utils/MyStatusBar';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {COLORS, FONTS, IMAGES} from '../../themes/Themes';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { COLORS, FONTS, IMAGES } from '../../themes/Themes';
 import normalize from '../../utils/helpers/normalize';
 
 const RestaurantCategory = props => {
@@ -135,16 +135,17 @@ const RestaurantCategory = props => {
     // Append a copy of the initial data to the end
     setListData(prev => [
       ...prev,
-      ...initialData.map(item => ({...item, id: prev.length + item.id})),
+      ...initialData.map(item => ({ ...item, id: prev.length + item.id })),
     ]);
   };
   return (
     <>
-     <MyStatusBar backgroundColor={COLORS.themeGreen} />
-      <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+      <MyStatusBar backgroundColor={COLORS.red} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
         <KeyboardAwareScrollView
           showsVerticalScrollIndicator={false}
-          bounces={false}>
+          bounces={false}
+        >
           <HomeHeader />
 
           <View
@@ -155,43 +156,36 @@ const RestaurantCategory = props => {
               marginTop: normalize(10),
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <FlatList
               data={listData}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() => {
                     props.navigation.navigate('RestaurantListByCategory', {
                       categoryName: item.name,
-                       itemId: item?.id,
+                      itemId: item?.id,
                     });
                   }}
-                  style={styles.item}>
+                  style={styles.item}
+                >
                   <View
                     style={{
                       height: normalize(65),
                       width: normalize(65),
-                      backgroundColor: COLORS.bgGrey,
-                      borderRadius: normalize(10),
+                      backgroundColor: COLORS.themeViolet,
+                      borderRadius: normalize(65),
                       justifyContent: 'center',
                       alignItems: 'center',
-                    }}>
-                    <View
-                      style={{
-                        height: normalize(55),
-                        width: normalize(55),
-                        borderRadius: normalize(55),
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        overflow: 'hidden',
-                      }}>
-                      <Image
-                        resizeMode="cover"
-                        source={{uri: item.image_url}}
-                        style={styles.image}
-                      />
-                    </View>
+                    }}
+                  >
+                    <Image
+                      resizeMode="cover"
+                      source={{ uri: item.image_url }}
+                      style={styles.image}
+                    />
                   </View>
                   <Text numberOfLines={1} style={styles.title}>
                     {item.name}
@@ -200,7 +194,7 @@ const RestaurantCategory = props => {
               )}
               numColumns={4}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{paddingBottom: 20}}
+              contentContainerStyle={{ paddingBottom: 20 }}
               onEndReached={handleEndReached}
               onEndReachedThreshold={0.5}
             />
@@ -228,15 +222,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: normalize(55),
-    height: normalize(55),
-    borderRadius: normalize(55),
+    width: normalize(60),
+    height: normalize(60),
+    borderRadius: normalize(60),
   },
   title: {
     textAlign: 'center',
-    marginTop: normalize(5),
-    fontSize: normalize(10),
+    marginTop: normalize(2),
+    fontSize: normalize(11),
     fontFamily: FONTS.PoppinsRegular,
-    color: COLORS.black,
+    color: COLORS.blue,
   },
 });

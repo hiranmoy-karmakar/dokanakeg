@@ -9,21 +9,41 @@ import {
   ScrollView,
   ImageBackground,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {COLORS, FONTS, IMAGES, LOTTIE} from '../../themes/Themes';
+import React, { useState, useEffect } from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { COLORS, FONTS, IMAGES, LOTTIE } from '../../themes/Themes';
 import normalize from '../../utils/helpers/normalize';
 import MyStatusBar from '../../utils/MyStatusBar';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import HomeHeader from '../../components/HomeHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LottieView from 'lottie-react-native';
+import {
+  activeAddressRequest,
+  allAddressListRequest,
+  placeOrderRequest,
+} from '../../redux/reducer/ProfileReducer';
+import connectionrequest from '../../utils/helpers/NetInfo';
+import ShowAlert from '../../utils/helpers/ShowAlert';
+import { useDispatch, useSelector } from 'react-redux';
 
+let status = '';
 const Cart = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+  const ProfileReducer = useSelector(state => state.ProfileReducer);
   const [cart, setCart] = useState([]);
   const [deliveryCheck, setdeliveryCheck] = useState('delivery');
   const [paymentMethod, setpaymentMethod] = useState('COD');
+  const [activeAddress, setactiveAddress] = useState({
+    name: '',
+    phone: '',
+    address: '',
+    pincode: '',
+    type: '',
+    landmark: '',
+  });
   console.log('jajajajajajaja', cart);
 
   const fetchCartData = async () => {
@@ -41,8 +61,111 @@ const Cart = () => {
   };
 
   useEffect(() => {
+    connectionrequest()
+      .then(() => {
+        dispatch(activeAddressRequest());
+      })
+      .catch(err => {
+        console.log(err);
+        ShowAlert('Please connect to internet');
+      });
+  }, []);
+
+  useEffect(() => {
     fetchCartData();
   }, []);
+
+  const clearCart = async () => {
+    try {
+      await AsyncStorage.removeItem('cart');
+      console.log('Cart cleared successfully.');
+    } catch (error) {
+      console.error('Failed to clear cart:', error);
+    }
+  };
+
+  const onPressPlaceOrder = async () => {
+    try {
+      const cartData = await AsyncStorage.getItem('cart');
+      const cart = cartData ? JSON.parse(cartData) : [];
+
+      const subtotal = cart.reduce((acc, item) => acc + item.total_price, 0);
+
+      const obj = {
+        order_type: 'food',
+        store_id: cart.length > 0 ? cart[0].store_id : null, // assuming all items are from same store
+        cart: cart,
+        subtotal: subtotal,
+        tax_amount: taxes, // Update if needed
+        shipping_cost: deliveryCharge, // Update if needed
+        discount_amount: discount, // Update if needed
+        total: totalPayable, // subtotal + tax/shipping - discount
+        delivery_address:
+          deliveryCheck === 'pickup'
+            ? null
+            : {
+                name: activeAddress?.name,
+                phone: activeAddress?.phone,
+                address: activeAddress?.address,
+                landmark: activeAddress?.landmark,
+                pincode: activeAddress?.pincode,
+              },
+        delivery_type: deliveryCheck, // 'pickup' or 'delivery'
+        payment: {
+          payment_method: paymentMethod.toLowerCase(), // 'cod' or 'online'
+          payment_reference: null, // You can add Razorpay ref here if online
+        },
+      };
+      console.log('youuuu', obj);
+
+      connectionrequest()
+        .then(() => {
+          dispatch(placeOrderRequest(obj)); // Dispatch the structured payload
+        })
+        .catch(err => {
+          console.log(err);
+          ShowAlert('Please connect to internet');
+        });
+    } catch (error) {
+      console.error('Error placing order:', error);
+      ShowAlert('Something went wrong while placing the order');
+    }
+  };
+
+  if (status == '' || ProfileReducer.status != status) {
+    switch (ProfileReducer.status) {
+      case 'Profile/placeOrderRequest':
+        status = ProfileReducer.status;
+        break;
+      case 'Profile/placeOrderSuccess':
+        status = ProfileReducer.status;
+        clearCart();
+        navigation.navigate('SuccessScreen');
+        break;
+      case 'Profile/placeOrderFailure':
+        status = ProfileReducer.status;
+      ////
+      case 'Profile/activeAddressRequest':
+        status = ProfileReducer.status;
+        break;
+      case 'Profile/activeAddressSuccess':
+        status = ProfileReducer.status;
+        const data = ProfileReducer?.activeAddressResponse?.data[0];
+
+        setactiveAddress({
+          name: data?.name || '',
+          phone: data?.phone || '',
+          address: data?.address || '',
+          pincode: data?.pincode || '',
+          type: data?.type || '',
+          landmark: data?.landmark || '',
+        });
+        break;
+      case 'Profile/activeAddressFailure':
+        status = ProfileReducer.status;
+      ////
+    }
+  }
 
   const updateQty = async (entry, type) => {
     try {
@@ -81,12 +204,12 @@ const Cart = () => {
   };
 
   const subtotal = cart.reduce((acc, item) => acc + (item.total_price || 0), 0);
-  const deliveryCharge = 50;
-  const discount = 50;
-  const taxes = 30;
-  const packaging = 25;
-  const convenience = 50;
-  const platformFee = 25;
+  const deliveryCharge = 0;
+  const discount = 0;
+  const taxes = 0;
+  const packaging = 30;
+  const convenience = 30;
+  const platformFee = 30;
 
   const totalPayable =
     subtotal +
@@ -97,30 +220,31 @@ const Cart = () => {
     platformFee -
     discount;
 
-  const PriceRow = ({label, value}) => (
+  const PriceRow = ({ label, value }) => (
     <>
       <View style={styles.priceRowBox}>
         <Text style={styles.priceLabel}>{label}</Text>
         <Text style={styles.priceValue}>{value}</Text>
       </View>
-      <View style={[styles.dottline, {marginVertical: normalize(2)}]}></View>
+      <View style={[styles.dottline, { marginVertical: normalize(2) }]}></View>
     </>
   );
 
   return (
     <>
-     <MyStatusBar backgroundColor={COLORS.themeGreen} />
-      <SafeAreaView style={{flex: 1, backgroundColor: COLORS.offwhite}}>
+      <MyStatusBar backgroundColor={COLORS.themeGreen} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.offwhite }}>
         <HomeHeader />
 
         {cart.length == 0 ? (
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          >
             <LottieView
               source={LOTTIE.nodatafound2} // path to your JSON file
               autoPlay
               loop
-              style={{width: normalize(200), height: normalize(200)}}
+              style={{ width: normalize(200), height: normalize(200) }}
             />
           </View>
         ) : (
@@ -128,7 +252,7 @@ const Cart = () => {
             <View style={styles.cartVw}>
               {cart.map((item, index) => (
                 <View key={index} style={styles.itemContainer}>
-                  <Image source={{uri: item.image}} style={styles.image} />
+                  <Image source={{ uri: item.image }} style={styles.image} />
                   <View style={styles.details}>
                     <Text numberOfLines={1} style={styles.name}>
                       {item.name}
@@ -137,13 +261,15 @@ const Cart = () => {
                   <View style={styles.qtyContainer}>
                     <TouchableOpacity
                       onPress={() => updateQty(item, 'dec')}
-                      style={styles.qtyBtn}>
+                      style={styles.qtyBtn}
+                    >
                       <Text style={styles.qtyText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles.qty}>{item.quantity}</Text>
                     <TouchableOpacity
                       onPress={() => updateQty(item, 'inc')}
-                      style={styles.qtyBtn}>
+                      style={styles.qtyBtn}
+                    >
                       <Text style={styles.qtyText}>+</Text>
                     </TouchableOpacity>
                   </View>
@@ -177,19 +303,12 @@ const Cart = () => {
 
             <View style={styles.deliveryVw}>
               <Text style={styles.sectionHeader}>Select Delivery Option</Text>
-              <Image
-                source={IMAGES.underline}
-                resizeMode="contain"
-                style={{
-                  height: normalize(10),
-                  width: normalize(280),
-                  bottom: normalize(8),
-                }}
-              />
+
               <View style={styles.smallVw}>
                 <TouchableOpacity
                   onPress={() => setdeliveryCheck('pickup')}
-                  style={styles.delType}>
+                  style={styles.delType}
+                >
                   <Image
                     source={
                       deliveryCheck === 'pickup'
@@ -200,13 +319,15 @@ const Cart = () => {
                     style={styles.btn}
                   />
                   <Text
-                    style={[styles.priceLabel, {marginLeft: normalize(10)}]}>
+                    style={[styles.priceLabel, { marginLeft: normalize(10) }]}
+                  >
                     Pick up from restaurant
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => setdeliveryCheck('delivery')}
-                  style={styles.delType}>
+                  style={styles.delType}
+                >
                   <Image
                     source={
                       deliveryCheck === 'delivery'
@@ -217,7 +338,8 @@ const Cart = () => {
                     style={styles.btn}
                   />
                   <Text
-                    style={[styles.priceLabel, {marginLeft: normalize(10)}]}>
+                    style={[styles.priceLabel, { marginLeft: normalize(10) }]}
+                  >
                     Home delivery
                   </Text>
                 </TouchableOpacity>
@@ -226,19 +348,12 @@ const Cart = () => {
 
             <View style={styles.deliveryVw}>
               <Text style={styles.sectionHeader}>Payment Method</Text>
-              <Image
-                source={IMAGES.underline}
-                resizeMode="contain"
-                style={{
-                  height: normalize(10),
-                  width: normalize(280),
-                  bottom: normalize(8),
-                }}
-              />
+
               <View style={styles.smallVw}>
                 <TouchableOpacity
                   onPress={() => setpaymentMethod('COD')}
-                  style={styles.delType}>
+                  style={styles.delType}
+                >
                   <Image
                     source={
                       paymentMethod === 'COD' ? IMAGES.checkon : IMAGES.checkoff
@@ -247,13 +362,15 @@ const Cart = () => {
                     style={styles.btn}
                   />
                   <Text
-                    style={[styles.priceLabel, {marginLeft: normalize(10)}]}>
+                    style={[styles.priceLabel, { marginLeft: normalize(10) }]}
+                  >
                     Cash on Delivery
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => setpaymentMethod('online')}
-                  style={styles.delType}>
+                  style={styles.delType}
+                >
                   <Image
                     source={
                       paymentMethod === 'online'
@@ -264,7 +381,8 @@ const Cart = () => {
                     style={styles.btn}
                   />
                   <Text
-                    style={[styles.priceLabel, {marginLeft: normalize(10)}]}>
+                    style={[styles.priceLabel, { marginLeft: normalize(10) }]}
+                  >
                     Online Payment
                   </Text>
                 </TouchableOpacity>
@@ -277,43 +395,46 @@ const Cart = () => {
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                  }}>
+                  }}
+                >
                   <Text style={styles.sectionHeader}>
                     Selected Delivery Address
                   </Text>
                   <TouchableOpacity
                     onPress={() => {
                       navigation.navigate('AddressChange');
-                    }}>
+                    }}
+                  >
                     <Text
                       style={[
                         styles.priceLabel,
-                        {color: COLORS.green, marginRight: normalize(10)},
-                      ]}>
+                        {
+                          color: COLORS.themeGreen,
+                          marginRight: normalize(10),
+                        },
+                      ]}
+                    >
                       Change
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <Image
-                  source={IMAGES.underline}
-                  resizeMode="contain"
-                  style={{
-                    height: normalize(10),
-                    width: normalize(280),
-                    bottom: normalize(8),
-                  }}
-                />
-                <View style={{flexDirection: 'row'}}>
+
+                <View style={{ flexDirection: 'row' }}>
                   <Image
-                    source={IMAGES.work}
+                    source={
+                      activeAddress?.type == 'home'
+                        ? IMAGES.homeaddress
+                        : activeAddress?.type == 'work'
+                        ? IMAGES.workaddress
+                        : IMAGES.otheraddress
+                    }
                     resizeMode="contain"
                     style={{
-                      height: normalize(15),
-                      width: normalize(15),
-                      tintColor: COLORS.red,
+                      height: normalize(20),
+                      width: normalize(20),
                     }}
                   />
-                  <Text
+                  {/* <Text
                     style={[
                       styles.priceLabel,
                       {
@@ -323,12 +444,18 @@ const Cart = () => {
                       },
                     ]}>
                     Work
-                  </Text>
+                  </Text> */}
                 </View>
-                <Text style={[styles.priceLabel, {color: COLORS.deepGrey}]}>
-                  Salt Lake Bypass, BN Block, Sector V, Bidhannagar, Kolkata,
-                  West Bengal 700091
+                <Text style={[styles.nameLabel]}>{activeAddress?.name}</Text>
+                <Text style={[styles.phoneLabel]}>{activeAddress?.phone}</Text>
+                <Text style={[styles.priceLabel, { color: COLORS.deepGrey }]}>
+                  {activeAddress?.address}
                 </Text>
+                {activeAddress?.landmark ? (
+                  <Text style={[styles.priceLabel, { color: COLORS.deepGrey }]}>
+                    Near, {activeAddress?.landmark}
+                  </Text>
+                ) : null}
               </View>
             )}
 
@@ -338,17 +465,26 @@ const Cart = () => {
                   height: normalize(60),
                   width: normalize(130),
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Text style={styles.moneyTxt}>{`₹${totalPayable}`}</Text>
                 <Text style={styles.amountTxt}>All total amount</Text>
               </View>
-              <TouchableOpacity style={styles.procedBtn}>
+              <TouchableOpacity
+                onPress={() => {
+                  paymentMethod === 'online' ? null : onPressPlaceOrder();
+                }}
+                style={styles.procedBtn}
+              >
                 <Text
                   style={[
                     styles.moneyTxt,
-                    {color: COLORS.white, fontSize: normalize(15)},
-                  ]}>
-                  Proceed to Pay
+                    { color: COLORS.themeViolet, fontSize: normalize(15) },
+                  ]}
+                >
+                  {paymentMethod === 'online'
+                    ? 'Proceed to Pay'
+                    : 'Place Order'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -372,7 +508,7 @@ const styles = StyleSheet.create({
   dottline: {
     height: normalize(1),
     borderWidth: normalize(1),
-    borderColor: COLORS.bordergrey,
+    borderColor: COLORS.blue,
     borderStyle: 'dashed',
     marginVertical: normalize(8),
   },
@@ -387,9 +523,9 @@ const styles = StyleSheet.create({
     height: normalize(40),
     borderRadius: normalize(5),
   },
-  details: {width: normalize(140)},
+  details: { width: normalize(140) },
   name: {
-    color: COLORS.black,
+    color: COLORS.themeGreen,
     fontSize: normalize(11),
     fontFamily: FONTS.PoppinsMedium,
   },
@@ -406,7 +542,7 @@ const styles = StyleSheet.create({
     top: normalize(2),
   },
   discounted: {
-    color: COLORS.black,
+    color: COLORS.themeViolet,
     fontSize: normalize(11),
     fontFamily: FONTS.PoppinsSemiBold,
     bottom: normalize(2),
@@ -414,12 +550,13 @@ const styles = StyleSheet.create({
   qtyContainer: {
     flexDirection: 'row',
     borderWidth: 1,
-    borderColor: COLORS.red,
+    borderColor: COLORS.themeViolet,
     borderRadius: normalize(8),
     alignItems: 'center',
     width: normalize(60),
     justifyContent: 'space-evenly',
     height: normalize(25),
+    backgroundColor: COLORS.blue,
   },
   qtyBtn: {
     height: normalize(20),
@@ -430,17 +567,17 @@ const styles = StyleSheet.create({
   qtyText: {
     fontSize: normalize(14),
     fontFamily: FONTS.PoppinsSemiBold,
-    color: COLORS.red,
+    color: COLORS.themeViolet,
   },
   qty: {
     fontSize: normalize(12),
     fontFamily: FONTS.PoppinsSemiBold,
-    color: COLORS.red,
+    color: COLORS.themeViolet,
   },
   sectionHeader: {
     fontSize: normalize(14),
     fontFamily: FONTS.PoppinsSemiBold,
-    color: COLORS.black,
+    color: COLORS.themeViolet,
     marginBottom: normalize(10),
   },
   priceRowBox: {
@@ -451,12 +588,22 @@ const styles = StyleSheet.create({
   priceLabel: {
     fontSize: normalize(11),
     fontFamily: FONTS.PoppinsRegular,
-    color: COLORS.black,
+    color: COLORS.themeGreen,
+  },
+  nameLabel: {
+    fontSize: normalize(13),
+    fontFamily: FONTS.PoppinsSemiBold,
+    color: COLORS.themeGreen,
+  },
+  phoneLabel: {
+    fontSize: normalize(11),
+    fontFamily: FONTS.PoppinsSemiBold,
+    color: COLORS.themeViolet,
   },
   priceValue: {
     fontSize: normalize(11),
     fontFamily: FONTS.PoppinsRegular,
-    color: COLORS.black,
+    color: COLORS.themeViolet,
   },
   deliveryVw: {
     // height: normalize(110),
@@ -485,7 +632,7 @@ const styles = StyleSheet.create({
   bottomPrice: {
     height: normalize(60),
     width: normalize(300),
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.themeGreen,
     borderRadius: normalize(10),
     alignSelf: 'center',
     marginTop: normalize(20),
@@ -497,17 +644,17 @@ const styles = StyleSheet.create({
   moneyTxt: {
     fontFamily: FONTS.PoppinsSemiBold,
     fontSize: normalize(20),
-    color: COLORS.black,
+    color: COLORS.themeViolet,
   },
   amountTxt: {
-    color: COLORS.green,
+    color: COLORS.blue,
     fontFamily: FONTS.PoppinsSemiBold,
     fontSize: normalize(13),
   },
   procedBtn: {
     height: normalize(40),
     width: normalize(140),
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     borderRadius: normalize(10),
     justifyContent: 'center',
     alignItems: 'center',

@@ -44,23 +44,33 @@ import {
   meatItems,
   bakedItems,
 } from '../../../StaticDataset';
+import { useDispatch, useSelector } from 'react-redux';
+import SearchSuggestion from '../../components/SearchSuggestion';
 
 const Grocery = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const ProfileReducer = useSelector(state => state.ProfileReducer);
+
+  const bannerData =
+    ProfileReducer?.bannerResponse?.data?.grocery_header_banner;
+  const bottombannerData =
+    ProfileReducer?.bannerResponse?.data?.grocery_footer_banner;
+  const topBannerImageLinksArray = bannerData?.map((item, index) => ({
+    id: index + 1,
+    image: `${item?.image_link}`,
+  }));
+  const bottomBannerImageLinksArray = bottombannerData?.map((item, index) => ({
+    id: index + 1,
+    image: `${item?.image_link}`,
+  }));
 
   return (
     <>
       <MyStatusBar backgroundColor={COLORS.themeGreen} />
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
         <HomeHeader />
-        <TouchableOpacity style={styles.searchContainer}>
-          <Image
-            source={IMAGES.search}
-            resizeMode="contain"
-            style={styles.searchIcon}
-          />
-          <Text style={styles.searchText}>Search For</Text>
-        </TouchableOpacity>
+        <SearchSuggestion />
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.bannerVw}>
             <Image
@@ -176,7 +186,7 @@ const Grocery = () => {
             <CategoryVerticalScroll dataSet={vegetablesCategoryData} />
           </View>
           <View style={styles.crouselVw}>
-            <CustomCarousel originalData={groceryCrousel} />
+            <CustomCarousel originalData={topBannerImageLinksArray} />
           </View>
 
           <View style={styles.categoryVw2}>
@@ -246,7 +256,7 @@ const Grocery = () => {
           </TouchableOpacity>
 
           <View style={styles.crouselVw}>
-            <CustomCarousel originalData={groceryCrousel} />
+            <CustomCarousel originalData={bottomBannerImageLinksArray} />
           </View>
 
           <View style={styles.categoryVw2}>
@@ -456,34 +466,6 @@ const Grocery = () => {
 
 export default Grocery;
 const styles = StyleSheet.create({
-  searchContainer: {
-    height: normalize(40),
-    width: normalize(300),
-    alignSelf: 'center',
-    marginTop: normalize(5),
-    borderRadius: normalize(30),
-    backgroundColor: COLORS.themeGreen,
-    shadowColor: COLORS.deepGrey,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: Platform.OS == 'ios' ? 0.2 : 0.7,
-    shadowRadius: 4,
-    elevation: 8,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingHorizontal: normalize(15),
-  },
-  searchText: {
-    fontFamily: FONTS.PoppinsRegular,
-    fontSize: normalize(11),
-    color: COLORS.white,
-    marginLeft: normalize(10),
-  },
-  searchIcon: {
-    height: normalize(18),
-    width: normalize(18),
-    tintColor: COLORS.themeViolet,
-  },
   categoryVw1: {
     flexDirection: 'row',
     justifyContent: 'space-between',

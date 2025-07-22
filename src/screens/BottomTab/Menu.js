@@ -14,24 +14,24 @@ import {
   Animated,
   FlatList,
 } from 'react-native';
-import React, {useState, useRef, useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {COLORS, FONTS, IMAGES} from '../../themes/Themes';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { COLORS, FONTS, IMAGES } from '../../themes/Themes';
 import normalize from '../../utils/helpers/normalize';
 import MyStatusBar from '../../utils/MyStatusBar';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import HomeHeader from '../../components/HomeHeader';
-import {initialCart} from '../../../StaticDataset';
+import { initialCart } from '../../../StaticDataset';
 import { useDispatch } from 'react-redux';
 import { logoutRequest } from '../../redux/reducer/AuthReducer';
 
 const Menu = () => {
   const navigation = useNavigation();
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const menuItems = [
-    {id: 1, label: 'Home', screen: 'Tab5', image: IMAGES.home},
-    {id: 2, label: 'My Account', screen: 'OrderList', image: IMAGES.profile},
-    {id: 3, label: 'Grocery Order', screen: 'Faq', image: IMAGES.grocery},
+    { id: 1, label: 'Home', screen: 'Tab5', image: IMAGES.home },
+    { id: 2, label: 'My Account', screen: 'OrderList', image: IMAGES.profile },
+    { id: 3, label: 'Grocery Order', screen: 'Faq', image: IMAGES.grocery },
     {
       id: 4,
       label: 'Restaurant Order',
@@ -44,25 +44,30 @@ const Menu = () => {
       screen: 'ContactUs',
       image: IMAGES.customersupport,
     },
-    {id: 6, label: 'Refer App', screen: 'Tab5', image: IMAGES.referapp},
-    {
-      id: 7,
-      label: 'Rate Application',
-      screen: 'OrderList',
-      image: IMAGES.rating,
-    },
+    // {id: 6, label: 'Refer App', screen: 'Tab5', image: IMAGES.referapp},
+    // {
+    //   id: 7,
+    //   label: 'Rate Application',
+    //   screen: 'OrderList',
+    //   image: IMAGES.rating,
+    // },
     {
       id: 8,
       label: 'Terms and Condition',
       screen: 'Faq',
       image: IMAGES.document,
     },
-    {id: 9, label: 'Privacy Policy', screen: 'AboutUs', image: IMAGES.document},
+    {
+      id: 9,
+      label: 'Privacy Policy',
+      screen: 'AboutUs',
+      image: IMAGES.document,
+    },
   ];
   return (
     <>
-     <MyStatusBar backgroundColor={COLORS.themeGreen} />
-      <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+      <MyStatusBar backgroundColor={COLORS.themeGreen} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
         <HomeHeader />
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
           <View
@@ -72,7 +77,8 @@ const Menu = () => {
               borderRadius: normalize(10),
               alignSelf: 'center',
               marginTop: normalize(20),
-            }}>
+            }}
+          >
             {menuItems.map(item => (
               <>
                 <TouchableOpacity
@@ -116,14 +122,15 @@ const Menu = () => {
                     //     navigation.navigate(item.screen);
                     //   }
                     // }
-                  }}>
+                  }}
+                >
                   <Image
                     source={item.image}
                     resizeMode="contain"
                     style={{
                       height: normalize(18),
                       width: normalize(18),
-                      tintColor:COLORS.blue
+                      tintColor: COLORS.blue,
                     }}
                   />
                   <Text
@@ -132,7 +139,8 @@ const Menu = () => {
                       fontSize: normalize(14),
                       color: COLORS.themeViolet,
                       fontFamily: FONTS.PoppinsRegular,
-                    }}>
+                    }}
+                  >
                     {item.label}
                   </Text>
                 </TouchableOpacity>
@@ -143,13 +151,14 @@ const Menu = () => {
                       alignSelf: 'center',
                       borderWidth: 0.5,
                       borderColor: COLORS.bordergrey,
-                    }}></View>
+                    }}
+                  ></View>
                 )}
               </>
             ))}
           </View>
           <TouchableOpacity
-          onPress={() => {
+            onPress={() => {
               dispatch(logoutRequest());
             }}
             style={{
@@ -168,7 +177,8 @@ const Menu = () => {
               // shadowOpacity: 0.25,
               // shadowRadius: 4,
               // elevation: 5, // For Android
-            }}>
+            }}
+          >
             <View
               style={{
                 height: normalize(30),
@@ -184,7 +194,7 @@ const Menu = () => {
                 ...Platform.select({
                   ios: {
                     shadowColor: COLORS.black,
-                    shadowOffset: {width: 0, height: 0},
+                    shadowOffset: { width: 0, height: 0 },
                     shadowOpacity: 0.2,
                     shadowRadius: 8,
                   },
@@ -193,18 +203,20 @@ const Menu = () => {
                     shadowColor: COLORS.black,
                   },
                 }),
-              }}>
+              }}
+            >
               <Image
                 source={IMAGES.power}
                 resizeMode="contain"
-                style={{height: normalize(15), width: normalize(15)}}
+                style={{ height: normalize(15), width: normalize(15) }}
               />
               <Text
                 style={{
                   fontSize: normalize(12),
                   color: COLORS.lightBlack,
                   fontFamily: FONTS.PoppinsRegular,
-                }}>
+                }}
+              >
                 Logout
               </Text>
             </View>

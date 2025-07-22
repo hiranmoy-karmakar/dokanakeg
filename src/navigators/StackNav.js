@@ -24,6 +24,8 @@ import AddressChange from '../screens/MainScreen/AddressChange';
 import RestaurentOrder from '../screens/MainScreen/RestaurentOrder';
 import GroceryOrder from '../screens/MainScreen/GroceryOrder';
 import MyAccount from '../screens/MainScreen/MyAccount';
+import SearchPage from '../screens/MainScreen/SearchPage';
+import SuccessScreen from '../components/SuccessScreen';
 
 export default function StackNav() {
   const [showSplash, setShowSplash] = useState(true);
@@ -52,11 +54,12 @@ export default function StackNav() {
     Details: Details,
     RestaurantFoodList: RestaurantFoodList,
     AddressChange: AddressChange,
-    // SuccessScreen: SuccessScreen,
     RestaurentOrder: RestaurentOrder,
     GroceryOrder: GroceryOrder,
     // RestaurantOrderDetails: RestaurantOrderDetails,
     MyAccount: MyAccount,
+    SearchPage: SearchPage,
+    SuccessScreen: SuccessScreen,
   };
 
   if (showSplash || AuthReducer?.isLoading) {

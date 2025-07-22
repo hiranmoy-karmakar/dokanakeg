@@ -21,11 +21,18 @@ import normalize from '../utils/helpers/normalize';
 import LinearGradient from 'react-native-linear-gradient';
 
 const PopularRestaurantScroll = ({fullData = []}) => {
+  const navigation = useNavigation();
   const infiniteData = Array(100).fill(fullData).flat();
   const listRef = useRef(null);
 
   const renderItem = ({item}) => (
-    <View style={styles.card}>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate('RestaurantFoodList', {
+          nearbyRestaurentItems: item,
+        });
+      }}
+      style={styles.card}>
       <View
         style={{
           height: normalize(110),
@@ -37,7 +44,7 @@ const PopularRestaurantScroll = ({fullData = []}) => {
           overflow: 'hidden',
         }}>
         <ImageBackground
-          source={item.image}
+          source={{uri: item.image_link}}
           style={styles.image}
           resizeMode="contain">
           <LinearGradient
@@ -51,7 +58,7 @@ const PopularRestaurantScroll = ({fullData = []}) => {
             }}
           />
           <Text numberOfLines={1} style={styles.offpriceTxt}>
-            {item.off} OFF UPTO {item.price}
+            10% OFF UPTO 300
           </Text>
         </ImageBackground>
       </View>
@@ -63,14 +70,13 @@ const PopularRestaurantScroll = ({fullData = []}) => {
         <Image
           source={IMAGES.star}
           resizeMode="contain"
-          style={{height: normalize(10), width: normalize(10),}}
+          style={{height: normalize(10), width: normalize(10)}}
         />
         <Text numberOfLines={1} style={[styles.timeTxt]}>
-          {item.off} ◎ {item.time}
+          {item.address}
         </Text>
       </View>
-     
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -108,27 +114,27 @@ const styles = StyleSheet.create({
     marginTop: normalize(5),
     fontSize: normalize(10),
     fontFamily: FONTS.PoppinsSemiBold,
-    color: COLORS.blue,
+    color: COLORS.themeGreen,
     marginLeft: normalize(2),
   },
   timeTxt: {
     textAlign: 'left',
     fontSize: normalize(7),
     fontFamily: FONTS.PoppinsBold,
-    color: COLORS.blue,
+    color: COLORS.themeViolet,
     marginLeft: normalize(2),
   },
   desc: {
     textAlign: 'left',
     fontSize: normalize(10),
     fontFamily: FONTS.PoppinsRegular,
-    color: COLORS.blue,
+    color: COLORS.black,
     marginLeft: normalize(5),
   },
   offpriceTxt: {
     fontSize: normalize(7),
     fontFamily: FONTS.PoppinsBold,
-    color: COLORS.white,
+    color: COLORS.blue,
     alignSelf: 'center',
     position: 'absolute',
     bottom: normalize(3),

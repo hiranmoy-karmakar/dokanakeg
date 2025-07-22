@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
     height: normalize(90),
   },
   image: {
-    width: normalize(55),
-    height: normalize(55),
-    borderRadius: normalize(55),
+    width: normalize(60),
+    height: normalize(60),
+    borderRadius: normalize(60),
   },
   title: {
     textAlign: 'center',
