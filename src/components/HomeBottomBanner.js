@@ -64,7 +64,7 @@ const HomeBottomBanner = ({marginBottom = 0}) => {
                 fontFamily: FONTS.PoppinsSemiBold,
                 textTransform: 'capitalize',
               }}>
-              Hurry! Use your ₹100 Free Cash
+              Hurry! Use your E£100 Free Cash
             </Text>
           </View>
 
@@ -82,7 +82,7 @@ const HomeBottomBanner = ({marginBottom = 0}) => {
                 fontFamily: FONTS.PoppinsMedium,
                 textTransform: 'capitalize',
               }}>
-              applied on your next order above ₹149
+              applied on your next order above E£149
             </Text>
           </View>
         </View>

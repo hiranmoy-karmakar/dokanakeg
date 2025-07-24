@@ -331,7 +331,7 @@ const TopTabWithList = ({
             {item.title}
           </Text>
           <View style={styles.priceRow}>
-            <Text style={styles.title}>₹{item.sale_price}</Text>
+            <Text style={styles.title}>E£{item.sale_price}</Text>
             <Text
               style={[
                 styles.title,
@@ -342,7 +342,7 @@ const TopTabWithList = ({
                   marginLeft: normalize(5),
                 },
               ]}>
-              ₹{item.mrp}
+              E£{item.mrp}
             </Text>
             <Image
               source={IMAGES.star}
@@ -605,7 +605,7 @@ const TopTabWithList = ({
                                       color: COLORS.themeViolet,
                                       fontSize: normalize(14),
                                     }}>
-                                    ₹{total}
+                                    E£{total}
                                   </Text>
 
                                   <View

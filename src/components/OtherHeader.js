@@ -18,7 +18,7 @@ import {COLORS, FONTS, IMAGES} from '../themes/Themes';
 import normalize from '../utils/helpers/normalize';
 import {useNavigation} from '@react-navigation/native';
 
-const OtherHeader = ({pagename = '', totalitems = ''}) => {
+const OtherHeader = ({pagename = '', totalitems = '', backPress}) => {
   const navigation = useNavigation();
   return (
     <View
@@ -42,7 +42,7 @@ const OtherHeader = ({pagename = '', totalitems = ''}) => {
           }}>
           <TouchableOpacity
             onPress={() => {
-              navigation.goBack();
+              backPress();
             }}>
             <Image
               source={IMAGES.backarrow}

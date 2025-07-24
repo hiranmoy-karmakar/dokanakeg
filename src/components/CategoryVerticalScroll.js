@@ -21,6 +21,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const CategoryVerticalScroll = ({ dataSet = [], type = '', itemId = '' }) => {
   const navigation = useNavigation();
+console.log('gfgfgfgfgfgfgfgfgffg', dataSet);
 
   return (
     <View>

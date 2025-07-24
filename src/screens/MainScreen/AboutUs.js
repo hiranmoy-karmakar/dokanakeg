@@ -20,7 +20,7 @@ import { useNavigation } from '@react-navigation/native';
 import RenderHtml from 'react-native-render-html';
 
 let status = '';
-const PrivacyPolicy = props => {
+const AboutUs = props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const ProfileReducer = useSelector(state => state.ProfileReducer);
@@ -30,7 +30,7 @@ const PrivacyPolicy = props => {
   useEffect(() => {
     connectionrequest()
       .then(() => {
-        dispatch(defaultPageRequest('privacy-policy'));
+        dispatch(defaultPageRequest('about-us'));
       })
       .catch(err => {
         console.log(err);
@@ -57,7 +57,7 @@ const PrivacyPolicy = props => {
     <>
       <MyStatusBar backgroundColor={COLORS.themeGreen} />
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.offwhite }}>
-        <DetailsHeader pagename={'Privacy Policy'} />
+        <DetailsHeader pagename={'About Us'} />
         <ScrollView contentContainerStyle={styles.container}>
           {data?.content ? (
             <RenderHtml
@@ -71,7 +71,7 @@ const PrivacyPolicy = props => {
   );
 };
 
-export default PrivacyPolicy;
+export default AboutUs;
 
 const styles = StyleSheet.create({
   container: {

@@ -30,37 +30,47 @@ const Menu = () => {
   const dispatch = useDispatch();
   const menuItems = [
     { id: 1, label: 'Home', screen: 'Tab5', image: IMAGES.home },
-    { id: 2, label: 'My Account', screen: 'OrderList', image: IMAGES.profile },
-    { id: 3, label: 'Grocery Order', screen: 'Faq', image: IMAGES.grocery },
+    {
+      id: 2,
+      label: 'My Account',
+      screen: 'MyAccount',
+      image: IMAGES.myaccount,
+    },
+    {
+      id: 3,
+      label: 'Grocery Order',
+      screen: 'GroceryOrder',
+      image: IMAGES.groceryorder,
+    },
     {
       id: 4,
       label: 'Restaurant Order',
-      screen: 'AboutUs',
+      screen: 'RestaurentOrder',
       image: IMAGES.restaurantorder,
     },
     {
       id: 5,
       label: 'Customer Support',
-      screen: 'ContactUs',
+      screen: 'CustomerSupport',
       image: IMAGES.customersupport,
     },
-    // {id: 6, label: 'Refer App', screen: 'Tab5', image: IMAGES.referapp},
-    // {
-    //   id: 7,
-    //   label: 'Rate Application',
-    //   screen: 'OrderList',
-    //   image: IMAGES.rating,
-    // },
+    {id: 6, label: 'About Us', screen: 'AboutUs', image: IMAGES.document},
+    {
+      id: 7,
+      label: 'Cancellation & Refund Policy',
+      screen: 'RefundPolicy',
+      image: IMAGES.document,
+    },
     {
       id: 8,
       label: 'Terms and Condition',
-      screen: 'Faq',
+      screen: 'TermsAndCondition',
       image: IMAGES.document,
     },
     {
       id: 9,
       label: 'Privacy Policy',
-      screen: 'AboutUs',
+      screen: 'PrivacyPolicy',
       image: IMAGES.document,
     },
   ];
@@ -90,38 +100,16 @@ const Menu = () => {
                     paddingHorizontal: normalize(15),
                   }}
                   onPress={() => {
-                    // if (AuthReducer?.getTokenResponse == null) {
-                    //   Alert.alert('⚠️', 'You have to login for Access', [
-                    //     {
-                    //       text: 'Cancel',
-                    //       onPress: () => console.log('Cancel Pressed'),
-                    //       style: 'cancel',
-                    //     },
-                    //     {
-                    //       text: 'Login',
-                    //       onPress: () => navigation.navigate('Login'),
-                    //       textStyle: {fontWeight: 'bold'},
-                    //     },
-                    //   ]);
-                    // } else {
-                    //   if (item.id === 1) {
-                    //     navigation.navigate('BottomTab', {
-                    //       screen: 'Tab5StackScreen',
-                    //       params: {
-                    //         screen: 'Tab5',
-                    //       },
-                    //     });
-                    //   } else if (item.id === 4) {
-                    //     navigation.navigate('BottomTab', {
-                    //       screen: 'Tab4StackScreen',
-                    //       params: {
-                    //         screen: 'Tab4',
-                    //       },
-                    //     });
-                    //   } else {
-                    //     navigation.navigate(item.screen);
-                    //   }
-                    // }
+                    if (item.id === 1) {
+                      navigation.navigate('BottomTab', {
+                        screen: 'Tab1StackScreen',
+                        params: {
+                          screen: 'Tab1',
+                        },
+                      });
+                    } else {
+                      navigation.navigate(item.screen);
+                    }
                   }}
                 >
                   <Image

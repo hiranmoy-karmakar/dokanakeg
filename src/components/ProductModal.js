@@ -65,8 +65,8 @@ const ProductModal = ({visible, setVisible, data}) => {
 
             <View style={styles.priceRow}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={styles.price}>₹{data?.sale_price}</Text>
-                <Text style={styles.strikePrice}>₹{data?.mrp}</Text>
+                <Text style={styles.price}>E£{data?.sale_price}</Text>
+                <Text style={styles.strikePrice}>E£{data?.mrp}</Text>
               </View>
               <View style={styles.ratingBox}>
                 <Image

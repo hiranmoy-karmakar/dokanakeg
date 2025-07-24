@@ -131,7 +131,7 @@ const RestaurantFoodList = props => {
 
   return (
     <>
-      <MyStatusBar backgroundColor={COLORS.red} />
+      <MyStatusBar backgroundColor={COLORS.themeGreen} />
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
         <KeyboardAwareScrollView
           showsVerticalScrollIndicator={false}

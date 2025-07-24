@@ -103,6 +103,7 @@ export const IMAGES = {
 export const LOTTIE = {
   nodatafound: require('../assets/lottie/nodatafound.json'),
   nodatafound2: require('../assets/lottie/nodatafound2.json'),
+  nodatafound3: require('../assets/lottie/nodatafound3.json'),
   success: require('../assets/lottie/Success.json'),
   congratulation: require('../assets/lottie/congratulation.json'),
 };

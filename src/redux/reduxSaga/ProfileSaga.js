@@ -1,6 +1,6 @@
-import {call, put, select, takeLatest} from 'redux-saga/effects';
+import { call, put, select, takeLatest } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getApi, postApi, putApi} from '../../utils/helpers/ApiRequest';
+import { getApi, postApi, putApi } from '../../utils/helpers/ApiRequest';
 import ShowAlert from '../../utils/helpers/ShowAlert';
 import constants from '../../utils/helpers/Constant';
 
@@ -43,8 +43,14 @@ import {
   editAccountFailure,
   allProductsSuccess,
   allProductsFailure,
+  productByCategorySuccess,
+  productByCategoryFailure,
+  productBySubCategorySuccess,
+  productBySubCategoryFailure,
+  defaultPageSuccess,
+  defaultPageFailure,
 } from '../reducer/ProfileReducer';
-import {getTokenSuccess, logoutSuccess} from '../reducer/AuthReducer';
+import { getTokenSuccess, logoutSuccess } from '../reducer/AuthReducer';
 let getItem = state => state.AuthReducer;
 
 //Terms and Condition
@@ -536,6 +542,82 @@ export function* allProductsSaga(action) {
   }
 }
 
+//product by category with subcategory
+export function* productByCategorySaga(action) {
+  let items = yield select(getItem);
+  let header = {
+    Accept: 'application/json',
+    contenttype: 'application/json',
+    accesstoken: items?.getTokenResponse,
+  };
+
+  try {
+    let query = `products/category/${action.payload}`;
+
+    let response = yield call(getApi, query, header);
+
+    if (response?.status === 200) {
+      yield put(productByCategorySuccess(response?.data));
+    } else {
+      yield put(productByCategoryFailure(response?.data));
+      ShowAlert(response?.data?.message);
+    }
+  } catch (error) {
+    console.log('food details error:', error);
+    yield put(productByCategoryFailure(error));
+  }
+}
+export function* productBySubCategorySaga(action) {
+  let items = yield select(getItem);
+  let header = {
+    Accept: 'application/json',
+    contenttype: 'application/json',
+    accesstoken: items?.getTokenResponse,
+  };
+
+  try {
+    let query = `products/category/${action.payload}`;
+
+    let response = yield call(getApi, query, header);
+
+    if (response?.status === 200) {
+      yield put(productBySubCategorySuccess(response?.data));
+    } else {
+      yield put(productBySubCategoryFailure(response?.data));
+      ShowAlert(response?.data?.message);
+    }
+  } catch (error) {
+    console.log('food details error:', error);
+    yield put(productBySubCategoryFailure(error));
+  }
+}
+//default pages call like T&C, ustomer support, about us, etc.
+
+export function* defaultPageSaga(action) {
+  let items = yield select(getItem);
+  let header = {
+    Accept: 'application/json',
+    contenttype: 'application/json',
+    accesstoken: items?.getTokenResponse,
+  };
+
+  try {
+    let query = `pages/slug/${action.payload}`;
+
+    let response = yield call(getApi, query, header);
+
+    if (response?.status === 200) {
+      yield put(defaultPageSuccess(response?.data));
+    } else {
+      yield put(defaultPageFailure(response?.data));
+      ShowAlert(response?.data?.message);
+    }
+  } catch (error) {
+    console.log('food details error:', error);
+    yield put(defaultPageFailure(error));
+  }
+}
+
 const watchFunction = [
   (function* () {
     yield takeLatest(
@@ -596,6 +678,18 @@ const watchFunction = [
   })(),
   (function* () {
     yield takeLatest('Profile/allProductsRequest', allProductsSaga);
+  })(),
+  (function* () {
+    yield takeLatest('Profile/productByCategoryRequest', productByCategorySaga);
+  })(),
+  (function* () {
+    yield takeLatest(
+      'Profile/productBySubCategoryRequest',
+      productBySubCategorySaga,
+    );
+  })(),
+  (function* () {
+    yield takeLatest('Profile/defaultPageRequest', defaultPageSaga);
   })(),
 ];
 

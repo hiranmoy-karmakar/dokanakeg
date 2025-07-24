@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   status: {},
@@ -23,6 +23,9 @@ const initialState = {
   profileDetailsResponse: {},
   editAccountResponse: {},
   allProductsResponse: {},
+  productByCategoryResponse: {},
+  productBySubCategoryResponse: {},
+  defaultPageResponse: {},
 };
 
 const ProfileSlice = createSlice({
@@ -258,6 +261,42 @@ const ProfileSlice = createSlice({
       state.error = action.error;
       state.status = action.type;
     },
+    //product by category with subcategory
+    productByCategoryRequest(state, action) {
+      state.status = action.type;
+    },
+    productByCategorySuccess(state, action) {
+      state.productByCategoryResponse = action.payload;
+      state.status = action.type;
+    },
+    productByCategoryFailure(state, action) {
+      state.error = action.error;
+      state.status = action.type;
+    },
+    //product by category with subcategory
+    productBySubCategoryRequest(state, action) {
+      state.status = action.type;
+    },
+    productBySubCategorySuccess(state, action) {
+      state.productBySubCategoryResponse = action.payload;
+      state.status = action.type;
+    },
+    productBySubCategoryFailure(state, action) {
+      state.error = action.error;
+      state.status = action.type;
+    },
+    //default pages call like T&C, ustomer support, about us, etc.
+    defaultPageRequest(state, action) {
+      state.status = action.type;
+    },
+    defaultPageSuccess(state, action) {
+      state.defaultPageResponse = action.payload;
+      state.status = action.type;
+    },
+    defaultPageFailure(state, action) {
+      state.error = action.error;
+      state.status = action.type;
+    },
   },
 });
 
@@ -337,6 +376,18 @@ export const {
   allProductsRequest,
   allProductsSuccess,
   allProductsFailure,
+
+  productByCategoryRequest,
+  productByCategorySuccess,
+  productByCategoryFailure,
+
+  productBySubCategoryRequest,
+  productBySubCategorySuccess,
+  productBySubCategoryFailure,
+
+  defaultPageRequest,
+  defaultPageSuccess,
+  defaultPageFailure,
 } = ProfileSlice.actions;
 
 export default ProfileSlice.reducer;

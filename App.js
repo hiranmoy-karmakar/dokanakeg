@@ -12,7 +12,7 @@ const App = () => {
   }, []);
   return (
     <>
-      <StatusBar animated={true} backgroundColor={COLORS.red} />
+      <StatusBar animated={true} backgroundColor={COLORS.themeGreen} />
       <StackNav />
     </>
   );

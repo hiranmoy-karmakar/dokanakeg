@@ -241,10 +241,10 @@ const Cart = () => {
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
           >
             <LottieView
-              source={LOTTIE.nodatafound2} // path to your JSON file
+              source={LOTTIE.nodatafound3} // path to your JSON file
               autoPlay
               loop
-              style={{ width: normalize(200), height: normalize(200) }}
+              style={{ width: normalize(300), height: normalize(300) }}
             />
           </View>
         ) : (
@@ -275,14 +275,14 @@ const Cart = () => {
                   </View>
                   <View style={styles.priceRow}>
                     <Text style={styles.original}>
-                      ₹
+                      E£
                       {(
                         (item.mrp_price + item.addon_price) *
                         item.quantity
                       ).toFixed(2)}
                     </Text>
                     <Text style={styles.discounted}>
-                      ₹{item.total_price.toFixed(2)}
+                      E£{item.total_price.toFixed(2)}
                     </Text>
                   </View>
                 </View>
@@ -291,14 +291,14 @@ const Cart = () => {
 
             <View style={styles.cartVw}>
               <Text style={styles.sectionHeader}>Price Details</Text>
-              <PriceRow label="Subtotal" value={`₹${subtotal}`} />
-              <PriceRow label="Delivery Charges" value={`₹${deliveryCharge}`} />
-              <PriceRow label="Discounts" value={`-₹${discount}`} />
-              <PriceRow label="Taxes (GST/VAT)" value={`₹${taxes}`} />
-              <PriceRow label="Packaging Charges" value={`₹${packaging}`} />
-              <PriceRow label="Convenience Fee" value={`₹${convenience}`} />
-              <PriceRow label="Platform Fee" value={`₹${platformFee}`} />
-              <PriceRow label="Total Payable" value={`₹${totalPayable}`} />
+              <PriceRow label="Subtotal" value={`E£${subtotal}`} />
+              <PriceRow label="Delivery Charges" value={`E£${deliveryCharge}`} />
+              <PriceRow label="Discounts" value={`-E£${discount}`} />
+              <PriceRow label="Taxes (GST/VAT)" value={`E£${taxes}`} />
+              <PriceRow label="Packaging Charges" value={`E£${packaging}`} />
+              <PriceRow label="Convenience Fee" value={`E£${convenience}`} />
+              <PriceRow label="Platform Fee" value={`E£${platformFee}`} />
+              <PriceRow label="Total Payable" value={`E£${totalPayable}`} />
             </View>
 
             <View style={styles.deliveryVw}>
@@ -467,7 +467,7 @@ const Cart = () => {
                   justifyContent: 'center',
                 }}
               >
-                <Text style={styles.moneyTxt}>{`₹${totalPayable}`}</Text>
+                <Text style={styles.moneyTxt}>{`E£${totalPayable}`}</Text>
                 <Text style={styles.amountTxt}>All total amount</Text>
               </View>
               <TouchableOpacity

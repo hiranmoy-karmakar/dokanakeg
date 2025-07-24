@@ -26,6 +26,12 @@ import GroceryOrder from '../screens/MainScreen/GroceryOrder';
 import MyAccount from '../screens/MainScreen/MyAccount';
 import SearchPage from '../screens/MainScreen/SearchPage';
 import SuccessScreen from '../components/SuccessScreen';
+import RestaurantOrderDetails from '../screens/MainScreen/RestaurantOrderDetails';
+import AboutUs from '../screens/MainScreen/AboutUs';
+import PrivacyPolicy from '../screens/MainScreen/PrivacyPolicy';
+import TermsAndCondition from '../screens/MainScreen/TermsAndCondition';
+import RefundPolicy from '../screens/MainScreen/RefundPolicy';
+import CustomerSupport from '../screens/MainScreen/CustomerSupport';
 
 export default function StackNav() {
   const [showSplash, setShowSplash] = useState(true);
@@ -56,10 +62,15 @@ export default function StackNav() {
     AddressChange: AddressChange,
     RestaurentOrder: RestaurentOrder,
     GroceryOrder: GroceryOrder,
-    // RestaurantOrderDetails: RestaurantOrderDetails,
+    RestaurantOrderDetails: RestaurantOrderDetails,
     MyAccount: MyAccount,
     SearchPage: SearchPage,
     SuccessScreen: SuccessScreen,
+    AboutUs: AboutUs,
+    PrivacyPolicy: PrivacyPolicy,
+    TermsAndCondition: TermsAndCondition,
+    RefundPolicy: RefundPolicy,
+    CustomerSupport: CustomerSupport,
   };
 
   if (showSplash || AuthReducer?.isLoading) {

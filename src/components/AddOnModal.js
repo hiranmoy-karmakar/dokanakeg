@@ -266,7 +266,7 @@ const AddOnModal = ({
                         color: COLORS.themeViolet,
                         marginLeft: normalize(10),
                       }}>
-                      ₹ {item.price}
+                      E£ {item.price}
                     </Text>
                   </View>
                 </TouchableOpacity>

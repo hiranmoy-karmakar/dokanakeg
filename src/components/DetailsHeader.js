@@ -77,7 +77,7 @@ const DetailsHeader = ({pagename = ''}) => {
           justifyContent: 'center',
           marginLeft:normalize(10)
         }}>
-        <Image
+        {/* <Image
           source={IMAGES.share}
           resizeMode="contain"
           style={{
@@ -85,7 +85,7 @@ const DetailsHeader = ({pagename = ''}) => {
             width: normalize(20),
             marginLeft: normalize(10),
           }}
-        />
+        /> */}
       </View>
     </View>
   );

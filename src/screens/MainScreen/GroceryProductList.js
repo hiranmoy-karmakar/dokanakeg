@@ -14,175 +14,155 @@ import {
   Animated,
   FlatList,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import HomeHeader from '../../components/HomeHeader';
 import MyStatusBar from '../../utils/MyStatusBar';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {COLORS, FONTS, IMAGES} from '../../themes/Themes';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { COLORS, FONTS, IMAGES } from '../../themes/Themes';
 import normalize from '../../utils/helpers/normalize';
 import OtherHeader from '../../components/OtherHeader';
+import connectionrequest from '../../utils/helpers/NetInfo';
+import {
+  productByCategoryRequest,
+  productBySubCategoryRequest,
+} from '../../redux/reducer/ProfileReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import ShowAlert from '../../utils/helpers/ShowAlert';
+import { useFocusEffect } from '@react-navigation/native';
 
-const GroceryProductList = () => {
-  const [selectedCategoryId, setSelectedCategoryId] = useState('1');
+let status = '';
+const GroceryProductList = props => {
+  const dispatch = useDispatch();
+  const ProfileReducer = useSelector(state => state.ProfileReducer);
+  const { categoryName } = props?.route?.params;
+  const itemId = props?.route?.params?.itemId;
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [categoryList, setCategoryList] = useState([]);
+  const [allProducts, setallProducts] = useState([]);
+  const [categoryStack, setCategoryStack] = useState([]);
 
-  const categoryList = [
-    {id: '1', name: 'Fresh Fruits', icon: IMAGES.smallCate1},
-    {id: '2', name: 'Seasonal Fruits', icon: IMAGES.smallCate2},
-    {id: '3', name: 'Exotic Fruits', icon: IMAGES.smallCate3},
-    {id: '4', name: 'Festive Essentials', icon: IMAGES.smallCate4},
-    {id: '5', name: 'Combos', icon: IMAGES.smallCate1},
-    {id: '6', name: 'Fresh Vegetables', icon: IMAGES.smallCate2},
-    {id: '7', name: 'Organic Vegetables', icon: IMAGES.smallCate3},
-    {id: '8', name: 'Herbs & Spices', icon: IMAGES.smallCate4},
-    {id: '9', name: 'Gourmet Vegetables', icon: IMAGES.smallCate1},
-    {id: '10', name: 'Vegetable Combos', icon: IMAGES.smallCate2},
-  ];
-  const allProducts = {
-    1: [
-      {
-        id: 'p1',
-        name: 'Pomegranate',
-        price: '₹200',
-        actualPrice: '₹250',
-        image: IMAGES.itemfruit1,
-        weight: '1kg',
-      },
-      {
-        id: 'p2',
-        name: 'Premium Orange',
-        price: '₹51',
-        actualPrice: '₹60',
-        image: IMAGES.itemfruit2,
-        weight: '3 pieces',
-      },
-      {
-        id: 'p3',
-        name: 'Dragon Fruit',
-        price: '₹90',
-        actualPrice: '₹100',
-        image: IMAGES.itemfruit3,
-        weight: '1 piece',
-      },
-      {
-        id: 'p4',
-        name: 'Grapes Mix',
-        price: '₹149',
-        actualPrice: '₹180',
-        image: IMAGES.itemfruit1,
-        weight: '450gms',
-      },
-      {
-        id: 'p5',
-        name: 'Apple',
-        price: '₹100',
-        actualPrice: '₹120',
-        image: IMAGES.itemfruit4,
-        weight: '1kg',
-      },
-    ],
-    2: [
-      {
-        id: 'p3',
-        name: 'Dragon Fruit',
-        price: '₹90',
-        actualPrice: '₹100',
-        image: IMAGES.itemfruit3,
-        weight: '1 piece',
-      },
-      {
-        id: 'p4',
-        name: 'Grapes Mix',
-        price: '₹149',
-        actualPrice: '₹180',
-        image: IMAGES.itemfruit1,
-        weight: '450gms',
-      },
-    ],
-    3: [
-      {
-        id: 'p5',
-        name: 'Apple',
-        price: '₹100',
-        actualPrice: '₹120',
-        image: IMAGES.itemfruit4,
-        weight: '1kg',
-      },
-      {
-        id: 'p6',
-        name: 'Banana',
-        price: '₹30',
-        actualPrice: '₹40',
-        image: IMAGES.itemfruit5,
-        weight: '6 pieces',
-      },
-    ],
-    4: [
-      {
-        id: 'p7',
-        name: 'Mango',
-        price: '₹80',
-        actualPrice: '₹100',
-        image: IMAGES.itemfruit1,
-        weight: '1kg',
-      },
-      {
-        id: 'p8',
-        name: 'Papaya',
-        price: '₹60',
-        actualPrice: '₹70',
-        image: IMAGES.itemfruit2,
-        weight: '1 piece',
-      },
-    ],
-    5: [
-      {
-        id: 'p9',
-        name: 'Mixed Fruit Basket',
-        price: '₹250',
-        actualPrice: '₹300',
-        image: IMAGES.itemfruit3,
-        weight: '1kg',
-      },
-      {
-        id: 'p10',
-        name: 'Fruit Salad Combo',
-        price: '₹300',
-        actualPrice: '₹350',
-        image: IMAGES.itemfruit4,
-        weight: '1kg',
-      },
-    ],
-    6: [
-      {
-        id: 'p11',
-        name: 'Fresh Spinach',
-        price: '₹40',
-        actualPrice: '₹50',
-        image: IMAGES.itemfruit1,
-        weight: '250gms',
-      },
-      {
-        id: 'p12',
-        name: 'Broccoli',
-        price: '₹60',
-        actualPrice: '₹70',
-        image: IMAGES.itemfruit2,
-        weight: '500gms',
-      },
-    ],
-  };
+  console.log('allProductsallProducts', allProducts);
+  console.log('categoryListcategoryList', categoryList);
 
-  const renderCategoryItem = ({item}) => (
+  useEffect(() => {
+    const { status, productByCategoryResponse, productBySubCategoryResponse } =
+      ProfileReducer;
+
+    if (!status) return;
+    if (
+      status === 'Profile/productByCategorySuccess' &&
+      productByCategoryResponse
+    ) {
+      const subCats = productByCategoryResponse.sub_categories || [];
+      const initialProducts = productByCategoryResponse.data || [];
+      const rootCategoryId = productByCategoryResponse.category?.id;
+
+      if (categoryList.length === 0 && allProducts.length === 0) {
+        setCategoryList(subCats);
+        setallProducts(initialProducts);
+
+        // ✅ Initialize root category
+        setSelectedCategoryId(rootCategoryId);
+        setCategoryStack([rootCategoryId]);
+      }
+    }
+
+    if (
+      status === 'Profile/productBySubCategorySuccess' &&
+      productBySubCategoryResponse
+    ) {
+      const subList = productBySubCategoryResponse.sub_categories || [];
+      const products = productBySubCategoryResponse.data || [];
+
+      setCategoryList(subList.length > 0 ? subList : categoryList);
+      setallProducts(products);
+    }
+
+    if (
+      status === 'Profile/productByCategoryFailure' ||
+      status === 'Profile/productBySubCategoryFailure'
+    ) {
+      setallProducts([]);
+    }
+  }, [ProfileReducer.status]);
+
+const onSubCategoryPress = id => {
+  setSelectedCategoryId(id);
+  setCategoryStack(prev => [...prev, id]); // ✅ Push new subcategory to stack
+  connectionrequest()
+    .then(() => {
+      dispatch(productBySubCategoryRequest(id));
+    })
+    .catch(() => ShowAlert('Please connect to internet'));
+};
+
+
+const handleBack = () => {
+  if (categoryStack.length > 1) {
+    const newStack = [...categoryStack];
+    newStack.pop(); // Remove current
+    const lastId = newStack[newStack.length - 1];
+
+    setCategoryStack(newStack);
+    setSelectedCategoryId(lastId);
+
+    connectionrequest()
+      .then(() => {
+        dispatch(productBySubCategoryRequest(lastId));
+      })
+      .catch(() => ShowAlert('Please connect to internet'));
+
+    // ✅ Ensure previous category is shown in left list
+    const exists = categoryList.find(cat => cat.id === lastId);
+    if (!exists) {
+      const dummyName = `SubCategory ${lastId}`;
+      const newCategory = {
+        id: lastId,
+        name: dummyName,
+        image_url: '', // or default image if needed
+      };
+      setCategoryList(prev => [...prev, newCategory]);
+    }
+  } else {
+    props.navigation.goBack();
+  }
+};
+
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setCategoryStack([]);
+      setSelectedCategoryId(null);
+      setCategoryList([]);
+      setallProducts([]);
+
+      connectionrequest()
+        .then(() => {
+          dispatch(productByCategoryRequest(itemId));
+        })
+        .catch(() => ShowAlert('Please connect to internet'));
+    }, [itemId]),
+  );
+
+  const renderCategoryItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => setSelectedCategoryId(item.id)}
-      style={[styles.categoryItem]}>
-      <Image source={item.icon} style={styles.categoryIcon} />
+      onPress={() => onSubCategoryPress(item.id)}
+      style={[styles.categoryItem]}
+    >
+      <Image source={{ uri: item?.image_url }} style={styles.categoryIcon} />
       <Text
         numberOfLines={1}
         style={[
           styles.categoryText,
-          {color: selectedCategoryId === item.id ? COLORS.themeViolet : COLORS.themeGreen},
-        ]}>
+          {
+            color:
+              selectedCategoryId === item.id
+                ? COLORS.themeViolet
+                : COLORS.themeGreen,
+          },
+        ]}
+      >
         {item.name}
       </Text>
       <View
@@ -190,23 +170,55 @@ const GroceryProductList = () => {
           height: normalize(1),
           width: normalize(30),
           backgroundColor:
-            selectedCategoryId === item.id ? COLORS.themeViolet : COLORS.themeGreen,
+            selectedCategoryId === item.id
+              ? COLORS.themeViolet
+              : COLORS.themeGreen,
           marginTop: normalize(3),
-        }}></View>
+        }}
+      ></View>
     </TouchableOpacity>
   );
 
-  const renderProductItem = ({item}) => (
-    <View style={styles.productCard}>
-      <Image source={item.image} style={styles.productImage} />
+const onProductPress = item => {
+  if (item.has_children) {
+    const alreadyExists = categoryList.find(cat => cat.id === item.id);
+    if (!alreadyExists) {
+      const newCategory = {
+        id: item.id,
+        name: item.title,
+        image_url: item.images[0]?.main_image,
+      };
+      setCategoryList(prev => [...prev, newCategory]);
+    }
 
-      <Text numberOfLines={1} style={styles.productName}>
-        {item.name}
+    setSelectedCategoryId(item.id);
+    setCategoryStack(prev => [...prev, item.id]); // ✅ Push to stack
+    connectionrequest()
+      .then(() => {
+        dispatch(productBySubCategoryRequest(item.id));
+      })
+      .catch(() => ShowAlert('Please connect to internet'));
+  } else {
+    // Navigate or handle add
+    // props.navigation.navigate('ProductDetail', { product: item });
+  }
+};
+
+
+  const renderProductItem = ({ item }) => (
+    <View style={styles.productCard}>
+      <Image
+        source={{ uri: item?.images[0]?.main_image }}
+        style={styles.productImage}
+      />
+      <Text numberOfLines={2} style={styles.productName}>
+        {item?.title}
       </Text>
       <Text
         numberOfLines={2}
-        style={[styles.description, {paddingHorizontal: normalize(5)}]}>
-        Tangy citrus, perfect for fresh juice or snacks.Tangy citrus, perfect
+        style={[styles.description, { paddingHorizontal: normalize(5) }]}
+      >
+        {item?.description}
       </Text>
       <View
         style={{
@@ -215,29 +227,38 @@ const GroceryProductList = () => {
           backgroundColor: COLORS.bordergrey,
           marginTop: normalize(5),
           alignSelf: 'center',
-        }}></View>
-      <Text style={[styles.productWeight]}>{item.weight}</Text>
-      <View style={{flexDirection: 'row'}}>
-        <Text style={styles.productPrice}>{item.price}</Text>
-        <Text style={styles.actualproductPrice}>{item.actualPrice}</Text>
+        }}
+      />
+      <View style={{ flexDirection: 'row' }}>
+        <Text style={styles.productPrice}>{item.sale_price}</Text>
+        <Text style={styles.actualproductPrice}>{item.mrp}</Text>
       </View>
-      <TouchableOpacity style={styles.addButton}>
-        <Text style={styles.addButtonText}>Add</Text>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => onProductPress(item)}
+      >
+        <Text style={styles.addButtonText}>
+          {item.has_children ? 'Explore' : 'Add'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
     <>
-     <MyStatusBar backgroundColor={COLORS.themeGreen} />
-      <SafeAreaView style={{flex: 1, backgroundColor: COLORS.offwhite}}>
-        <OtherHeader pagename="Fresh Fruits" totalitems="505" />
+      <MyStatusBar backgroundColor={COLORS.themeGreen} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.offwhite }}>
+        <OtherHeader
+          pagename={ProfileReducer?.productByCategoryResponse?.category?.name}
+          totalitems={ProfileReducer?.productByCategoryResponse?.data?.length}
+          backPress={handleBack}
+        />
         <View style={styles.container}>
           <View style={styles.leftVw}>
             {/* Left Category List */}
             <FlatList
               data={categoryList}
-              keyExtractor={item => item.id}
+              keyExtractor={item => item.id.toString()}
               renderItem={renderCategoryItem}
               showsVerticalScrollIndicator={false}
               style={styles.leftList}
@@ -247,8 +268,9 @@ const GroceryProductList = () => {
           {/* Right Product List */}
           <View style={styles.rightVw}>
             <FlatList
-              data={allProducts[selectedCategoryId]}
-              keyExtractor={item => item.id}
+              // data={allProducts[selectedCategoryId]}
+              data={allProducts}
+              keyExtractor={item => item.id.toString()}
               renderItem={renderProductItem}
               showsVerticalScrollIndicator={false}
               numColumns={2}
@@ -280,11 +302,11 @@ const styles = StyleSheet.create({
   rightVw: {
     height: Platform.OS == 'android' ? normalize(580) : normalize(570),
     width: normalize(230),
-   backgroundColor: COLORS.bgGrey,
+    backgroundColor: COLORS.bgGrey,
   },
   leftList: {
     width: normalize(75),
-   backgroundColor: COLORS.bgGrey,
+    backgroundColor: COLORS.bgGrey,
   },
   rightList: {
     width: normalize(230),
@@ -298,8 +320,10 @@ const styles = StyleSheet.create({
     width: normalize(50),
     height: normalize(50),
     backgroundColor: COLORS.bgGrey,
-    resizeMode: 'contain',
-    borderRadius: normalize(8),
+    resizeMode: 'cover',
+    borderRadius: normalize(50),
+    borderWidth: normalize(1),
+    borderColor: COLORS.themeViolet,
   },
   categoryText: {
     fontSize: normalize(8),
@@ -327,7 +351,7 @@ const styles = StyleSheet.create({
   productImage: {
     width: normalize(100),
     height: normalize(100),
-    resizeMode: 'contain',
+    resizeMode: 'cover',
     borderRadius: normalize(10),
     alignSelf: 'center',
     marginTop: normalize(8),
@@ -335,9 +359,11 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: normalize(12),
     fontFamily: FONTS.PoppinsMedium,
-    textAlign: 'center',
+    textAlign: 'left',
     marginVertical: normalize(4),
-    color: COLORS.themeViolet
+    color: COLORS.themeViolet,
+    marginHorizontal: normalize(5),
+    height: normalize(35),
   },
   description: {
     fontSize: normalize(9),
