@@ -13,8 +13,10 @@ import {
   StyleSheet,
   Animated,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import Modal from 'react-native-modal';
 import HomeHeader from '../../components/HomeHeader';
 import MyStatusBar from '../../utils/MyStatusBar';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -40,6 +42,9 @@ const GroceryProductList = props => {
   const [categoryList, setCategoryList] = useState([]);
   const [allProducts, setallProducts] = useState([]);
   const [categoryStack, setCategoryStack] = useState([]);
+  // varient modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   console.log('allProductsallProducts', allProducts);
   console.log('categoryListcategoryList', categoryList);
@@ -86,49 +91,34 @@ const GroceryProductList = props => {
     }
   }, [ProfileReducer.status]);
 
-const onSubCategoryPress = id => {
-  setSelectedCategoryId(id);
-  setCategoryStack(prev => [...prev, id]); // ✅ Push new subcategory to stack
-  connectionrequest()
-    .then(() => {
-      dispatch(productBySubCategoryRequest(id));
-    })
-    .catch(() => ShowAlert('Please connect to internet'));
-};
-
-
-const handleBack = () => {
-  if (categoryStack.length > 1) {
-    const newStack = [...categoryStack];
-    newStack.pop(); // Remove current
-    const lastId = newStack[newStack.length - 1];
-
-    setCategoryStack(newStack);
-    setSelectedCategoryId(lastId);
-
+  const onSubCategoryPress = id => {
+    setSelectedCategoryId(id);
+    setCategoryStack(prev => [...prev, id]); // ✅ Push new subcategory to stack
     connectionrequest()
       .then(() => {
-        dispatch(productBySubCategoryRequest(lastId));
+        dispatch(productBySubCategoryRequest(id));
       })
       .catch(() => ShowAlert('Please connect to internet'));
+  };
 
-    // ✅ Ensure previous category is shown in left list
-    const exists = categoryList.find(cat => cat.id === lastId);
-    if (!exists) {
-      const dummyName = `SubCategory ${lastId}`;
-      const newCategory = {
-        id: lastId,
-        name: dummyName,
-        image_url: '', // or default image if needed
-      };
-      setCategoryList(prev => [...prev, newCategory]);
+  const handleBack = () => {
+    if (categoryStack.length > 1) {
+      const newStack = [...categoryStack];
+      newStack.pop(); // Remove current
+      const lastId = newStack[newStack.length - 1];
+
+      setCategoryStack(newStack);
+      setSelectedCategoryId(lastId);
+
+      connectionrequest()
+        .then(() => {
+          dispatch(productBySubCategoryRequest(lastId));
+        })
+        .catch(() => ShowAlert('Please connect to internet'));
+    } else {
+      props.navigation.goBack();
     }
-  } else {
-    props.navigation.goBack();
-  }
-};
-
-
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -179,31 +169,35 @@ const handleBack = () => {
     </TouchableOpacity>
   );
 
-const onProductPress = item => {
-  if (item.has_children) {
-    const alreadyExists = categoryList.find(cat => cat.id === item.id);
-    if (!alreadyExists) {
-      const newCategory = {
-        id: item.id,
-        name: item.title,
-        image_url: item.images[0]?.main_image,
-      };
-      setCategoryList(prev => [...prev, newCategory]);
+  const onProductPress = item => {
+    if (item.has_children) {
+      const alreadyExists = categoryList.find(cat => cat.id === item.id);
+      if (!alreadyExists) {
+        const newCategory = {
+          id: item.id,
+          name: item.title,
+          image_url: item.images[0]?.main_image,
+        };
+        setCategoryList(prev => [...prev, newCategory]);
+      }
+
+      setSelectedCategoryId(item.id);
+      setCategoryStack(prev => [...prev, item.id]);
+      connectionrequest()
+        .then(() => {
+          dispatch(productBySubCategoryRequest(item.id));
+        })
+        .catch(() => ShowAlert('Please connect to internet'));
+    } else {
+      // 👉 Check for variations
+      if (item.variations && item.variations.length > 0) {
+        setSelectedProduct(item);
+        setIsModalVisible(true);
+      } else {
+        console.log('no varients');
+      }
     }
-
-    setSelectedCategoryId(item.id);
-    setCategoryStack(prev => [...prev, item.id]); // ✅ Push to stack
-    connectionrequest()
-      .then(() => {
-        dispatch(productBySubCategoryRequest(item.id));
-      })
-      .catch(() => ShowAlert('Please connect to internet'));
-  } else {
-    // Navigate or handle add
-    // props.navigation.navigate('ProductDetail', { product: item });
-  }
-};
-
+  };
 
   const renderProductItem = ({ item }) => (
     <View style={styles.productCard}>
@@ -249,8 +243,12 @@ const onProductPress = item => {
       <MyStatusBar backgroundColor={COLORS.themeGreen} />
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.offwhite }}>
         <OtherHeader
-          pagename={ProfileReducer?.productByCategoryResponse?.category?.name}
-          totalitems={ProfileReducer?.productByCategoryResponse?.data?.length}
+          pagename={
+            ProfileReducer?.productByCategoryResponse?.category?.name ?? ''
+          }
+          totalitems={
+            ProfileReducer?.productByCategoryResponse?.data?.length || 0
+          }
           backPress={handleBack}
         />
         <View style={styles.container}>
@@ -279,6 +277,164 @@ const onProductPress = item => {
           </View>
         </View>
       </SafeAreaView>
+      <Modal
+        isVisible={isModalVisible}
+        onBackdropPress={() => setIsModalVisible(false)}
+        backdropOpacity={0.5}
+        style={{
+          margin: 0,
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+        }}
+      >
+        <View
+          style={{
+            width: '100%',
+            backgroundColor: COLORS.bgGrey,
+            borderRadius: normalize(10),
+            alignItems: 'center',
+            paddingVertical: normalize(20),
+          }}
+        >
+          <View
+            style={{
+              width: '100%',
+              height: normalize(50),
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            <View style={{ width: '75%' }}>
+              <Text
+                style={{
+                  fontFamily: FONTS.LatoRegular,
+                  color: COLORS.themeViolet,
+                  fontSize: normalize(12),
+                }}
+              >
+                {selectedProduct?.title}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: FONTS.LatoBold,
+                  color: COLORS.blue,
+                  fontSize: normalize(15),
+                  textTransform: 'capitalize',
+                }}
+              >
+                your variations
+              </Text>
+            </View>
+            <View
+              style={{
+                width: '10%',
+                alignItems: 'flex-end',
+              }}
+            >
+              <TouchableOpacity onPress={() => setIsModalVisible(false)}>
+                <Image
+                  source={IMAGES.close}
+                  resizeMode="contain"
+                  style={{ height: normalize(20), width: normalize(20) }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View
+            style={{
+              width: '90%',
+              backgroundColor: COLORS.themeGreen,
+              paddingTop: normalize(10),
+              borderRadius: normalize(10),
+              paddingHorizontal: normalize(10),
+            }}
+          >
+            <View style={{ maxHeight: normalize(300) }}>
+              <ScrollView
+                contentContainerStyle={{ paddingBottom: normalize(10) }}
+                showsVerticalScrollIndicator={false}
+              >
+                {selectedProduct?.variations?.map((variant, index) => (
+                  <>
+                    <View
+                      style={{
+                        paddingVertical: normalize(10),
+                        width: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <Image
+                        style={{
+                          height: normalize(50),
+                          width: normalize(50),
+                          borderRadius: normalize(50),
+                          borderWidth: normalize(1),
+                          borderColor: COLORS.themeViolet,
+                        }}
+                        resizeMode="cover"
+                        source={{ uri: variant?.main_image?.main_image }}
+                      />
+                      <View
+                        style={{
+                          width: '40%',
+                          paddingVertical: normalize(5),
+                        }}
+                      >
+                        {variant?.options?.map((option, idx) => (
+                          <Text
+                            key={idx}
+                            style={{
+                              fontFamily: FONTS.PoppinsSemiBold,
+                              color: COLORS.themeViolet,
+                              fontSize: normalize(11),
+                            }}
+                          >
+                            {option?.attribute} : {option?.value}
+                          </Text>
+                        ))}
+                      </View>
+
+                      <TouchableOpacity
+                        style={{
+                          height: normalize(22),
+                          width: normalize(80),
+                          borderRadius: normalize(5),
+                          borderWidth: normalize(1),
+                          borderColor: COLORS.themeViolet,
+                          backgroundColor: COLORS.blue,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Text
+                          numberOfLines={1}
+                          style={{
+                            fontFamily: FONTS.PoppinsSemiBold,
+                            fontSize: normalize(10),
+                            color: COLORS.themeViolet,
+                          }}
+                        >
+                          ADD
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View
+                      style={{
+                        height: 1,
+                        width: '100%',
+                        backgroundColor: COLORS.themeViolet,
+                      }}
+                    ></View>
+                  </>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };
@@ -335,10 +491,6 @@ const styles = StyleSheet.create({
   productCard: {
     width: normalize(115),
     backgroundColor: '#fff',
-    // margin: normalize(5),
-    // padding: normalize(10),
-    // alignItems: 'center',
-    // elevation: 3,
     alignSelf: 'center',
     height: Platform.OS == 'ios' ? normalize(240) : normalize(250),
     borderBottomWidth: normalize(1),
