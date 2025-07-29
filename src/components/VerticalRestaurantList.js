@@ -24,7 +24,6 @@ const VerticalRestaurantList = ({fullData = []}) => {
   const navigation = useNavigation();
   //   const infiniteData = Array(100).fill(fullData).flat();
   //   const listRef = useRef(null);
-  console.log('ihuhuhuhuhuhuhuhuh', fullData);
 
   const renderItem = ({item}) => (
     <TouchableOpacity

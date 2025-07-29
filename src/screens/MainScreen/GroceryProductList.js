@@ -224,7 +224,7 @@ const GroceryProductList = props => {
         }}
       />
       <View style={{ flexDirection: 'row' }}>
-        <Text style={styles.productPrice}>{item.sale_price}</Text>
+        <Text style={styles.productPrice}>E£ {item.sale_price}</Text>
         <Text style={styles.actualproductPrice}>{item.mrp}</Text>
       </View>
       <TouchableOpacity

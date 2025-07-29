@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,16 +9,16 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {COLORS, FONTS, IMAGES} from '../themes/Themes';
-import {foodData} from '../../StaticDataset';
+import { COLORS, FONTS, IMAGES } from '../themes/Themes';
+import { foodData } from '../../StaticDataset';
 import normalize from '../utils/helpers/normalize';
 import AddButton from './AddButton';
 import connectionrequest from '../utils/helpers/NetInfo';
-import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import ShowAlert from '../utils/helpers/ShowAlert';
 import ProductModal from './ProductModal';
-import {foodDetailsRequest} from '../redux/reducer/ProfileReducer';
+import { foodDetailsRequest } from '../redux/reducer/ProfileReducer';
 import AddOnModal from './AddOnModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Modal from 'react-native-modal';
@@ -285,18 +285,20 @@ const TopTabWithList = ({
       style={[
         styles.tabButton,
         selectedCategoryId === cat.id && styles.activeTab,
-      ]}>
+      ]}
+    >
       <Text
         style={[
           styles.tabText,
           selectedCategoryId === cat.id && styles.activeTabText,
-        ]}>
+        ]}
+      >
         {cat.name}
       </Text>
     </TouchableOpacity>
   );
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     const isInCart = local_cartData?.some(
       cartItem => cartItem.food_item_id === item.id,
     );
@@ -327,7 +329,8 @@ const TopTabWithList = ({
         <View style={styles.cardContent}>
           <Text
             numberOfLines={1}
-            style={[styles.title, {marginTop: normalize(10)}]}>
+            style={[styles.title, { marginTop: normalize(10) }]}
+          >
             {item.title}
           </Text>
           <View style={styles.priceRow}>
@@ -341,7 +344,8 @@ const TopTabWithList = ({
                   textDecorationColor: COLORS.themeViolet,
                   marginLeft: normalize(5),
                 },
-              ]}>
+              ]}
+            >
               E£{item.mrp}
             </Text>
             <Image
@@ -359,7 +363,8 @@ const TopTabWithList = ({
                 fontFamily: FONTS.PoppinsBold,
                 color: COLORS.themeGreen,
                 marginLeft: normalize(2),
-              }}>
+              }}
+            >
               {/* {item.rating} */}4.4(98k+)
             </Text>
           </View>
@@ -372,8 +377,12 @@ const TopTabWithList = ({
               setbuttonSellect('readmore');
               foodDetailsFunc(item.id);
               setVisibleProductId(item.id);
-            }}>
-            <Text numberOfLines={2} style={[styles.desc, {color: COLORS.blue}]}>
+            }}
+          >
+            <Text
+              numberOfLines={2}
+              style={[styles.desc, { color: COLORS.blue }]}
+            >
               Read More...
             </Text>
           </TouchableOpacity>
@@ -384,9 +393,10 @@ const TopTabWithList = ({
             width: normalize(100),
             justifyContent: 'center',
             marginTop: normalize(5),
-          }}>
+          }}
+        >
           <Image
-            source={{uri: item?.main_image?.large_image}}
+            source={{ uri: item?.main_image?.large_image }}
             style={styles.image}
           />
 
@@ -405,7 +415,8 @@ const TopTabWithList = ({
                 alignSelf: 'center',
                 bottom: normalize(-10),
                 flexDirection: 'row',
-              }}>
+              }}
+            >
               <TouchableOpacity
                 onPress={decrement}
                 style={{
@@ -413,14 +424,16 @@ const TopTabWithList = ({
                   width: normalize(22),
                   justifyContent: 'center',
                   alignItems: 'center',
-                }}>
+                }}
+              >
                 <Text
                   numberOfLines={1}
                   style={{
                     fontFamily: FONTS.PoppinsSemiBold,
                     fontSize: normalize(12),
                     color: COLORS.themeViolet,
-                  }}>
+                  }}
+                >
                   -
                 </Text>
               </TouchableOpacity>
@@ -431,7 +444,8 @@ const TopTabWithList = ({
                   fontFamily: FONTS.PoppinsSemiBold,
                   fontSize: normalize(11),
                   color: COLORS.themeViolet,
-                }}>
+                }}
+              >
                 {quantity}
               </Text>
 
@@ -446,14 +460,16 @@ const TopTabWithList = ({
                   width: normalize(22),
                   justifyContent: 'center',
                   alignItems: 'center',
-                }}>
+                }}
+              >
                 <Text
                   numberOfLines={1}
                   style={{
                     fontFamily: FONTS.PoppinsSemiBold,
                     fontSize: normalize(12),
                     color: COLORS.themeViolet,
-                  }}>
+                  }}
+                >
                   +
                 </Text>
               </TouchableOpacity>
@@ -467,7 +483,8 @@ const TopTabWithList = ({
                   margin: 0,
                   justifyContent: 'flex-end',
                   alignItems: 'center',
-                }}>
+                }}
+              >
                 <View
                   style={{
                     width: '100%',
@@ -475,21 +492,24 @@ const TopTabWithList = ({
                     borderRadius: normalize(10),
                     alignItems: 'center',
                     paddingVertical: normalize(20),
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       width: '100%',
                       height: normalize(50),
                       flexDirection: 'row',
                       justifyContent: 'space-evenly',
-                    }}>
-                    <View style={{width: '75%'}}>
+                    }}
+                  >
+                    <View style={{ width: '75%' }}>
                       <Text
                         style={{
                           fontFamily: FONTS.LatoRegular,
                           color: COLORS.themeViolet,
                           fontSize: normalize(12),
-                        }}>
+                        }}
+                      >
                         {item.title}
                       </Text>
                       <Text
@@ -498,7 +518,8 @@ const TopTabWithList = ({
                           color: COLORS.themeViolet,
                           fontSize: normalize(15),
                           textTransform: 'capitalize',
-                        }}>
+                        }}
+                      >
                         your customisations
                       </Text>
                     </View>
@@ -506,13 +527,18 @@ const TopTabWithList = ({
                       style={{
                         width: '10%',
                         alignItems: 'flex-end',
-                      }}>
+                      }}
+                    >
                       <TouchableOpacity
-                        onPress={() => setActiveAddModalItemId(null)}>
+                        onPress={() => setActiveAddModalItemId(null)}
+                      >
                         <Image
                           source={IMAGES.close}
                           resizeMode="contain"
-                          style={{height: normalize(20), width: normalize(20)}}
+                          style={{
+                            height: normalize(20),
+                            width: normalize(20),
+                          }}
                         />
                       </TouchableOpacity>
                     </View>
@@ -524,11 +550,13 @@ const TopTabWithList = ({
                       paddingTop: normalize(10),
                       borderRadius: normalize(10),
                       paddingHorizontal: normalize(10),
-                    }}>
-                    <View style={{maxHeight: normalize(300)}}>
+                    }}
+                  >
+                    <View style={{ maxHeight: normalize(300) }}>
                       <ScrollView
-                        contentContainerStyle={{paddingBottom: normalize(10)}}
-                        showsVerticalScrollIndicator={false}>
+                        contentContainerStyle={{ paddingBottom: normalize(10) }}
+                        showsVerticalScrollIndicator={false}
+                      >
                         {local_cartData
                           .filter(entry => entry.food_item_id === item.id)
                           .map((entry, index) => {
@@ -539,8 +567,6 @@ const TopTabWithList = ({
                                 (acc, addon) => acc + (addon.price || 0),
                                 0,
                               ) || 0;
-                            console.log('kakakakakkakakakak', entry);
-
                             const total =
                               entry.total_price ||
                               entry.quantity *
@@ -572,7 +598,8 @@ const TopTabWithList = ({
                                         color: COLORS.themeViolet,
                                         fontSize: normalize(12),
                                         paddingVertical: normalize(2),
-                                      }}>
+                                      }}
+                                    >
                                       • {addon.title}
                                     </Text>
                                   ))
@@ -583,7 +610,8 @@ const TopTabWithList = ({
                                       color: COLORS.themeViolet,
                                       fontSize: normalize(12),
                                       paddingVertical: normalize(2),
-                                    }}>
+                                    }}
+                                  >
                                     • No customization added
                                   </Text>
                                 )}
@@ -598,13 +626,15 @@ const TopTabWithList = ({
                                       nearbyRestaurentItems?.addon_items != []
                                         ? normalize(10)
                                         : null,
-                                  }}>
+                                  }}
+                                >
                                   <Text
                                     style={{
                                       fontFamily: FONTS.LatoBold,
                                       color: COLORS.themeViolet,
                                       fontSize: normalize(14),
-                                    }}>
+                                    }}
+                                  >
                                     E£{total}
                                   </Text>
 
@@ -620,7 +650,8 @@ const TopTabWithList = ({
                                       alignItems: 'center',
                                       alignSelf: 'center',
                                       flexDirection: 'row',
-                                    }}>
+                                    }}
+                                  >
                                     <TouchableOpacity
                                       onPress={() => handleUpdateQty(entry, -1)}
                                       style={{
@@ -628,14 +659,16 @@ const TopTabWithList = ({
                                         width: normalize(22),
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                      }}>
+                                      }}
+                                    >
                                       <Text
                                         numberOfLines={1}
                                         style={{
                                           fontFamily: FONTS.PoppinsSemiBold,
                                           fontSize: normalize(12),
                                           color: COLORS.themeViolet,
-                                        }}>
+                                        }}
+                                      >
                                         -
                                       </Text>
                                     </TouchableOpacity>
@@ -646,7 +679,8 @@ const TopTabWithList = ({
                                         fontFamily: FONTS.PoppinsSemiBold,
                                         fontSize: normalize(11),
                                         color: COLORS.themeViolet,
-                                      }}>
+                                      }}
+                                    >
                                       {quantity}
                                     </Text>
 
@@ -657,14 +691,16 @@ const TopTabWithList = ({
                                         width: normalize(22),
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                      }}>
+                                      }}
+                                    >
                                       <Text
                                         numberOfLines={1}
                                         style={{
                                           fontFamily: FONTS.PoppinsSemiBold,
                                           fontSize: normalize(12),
                                           color: COLORS.themeViolet,
-                                        }}>
+                                        }}
+                                      >
                                         +
                                       </Text>
                                     </TouchableOpacity>
@@ -684,7 +720,8 @@ const TopTabWithList = ({
                           backgroundColor: COLORS.themeViolet,
                           marginTop: normalize(10),
                           alignSelf: 'center',
-                        }}></View>
+                        }}
+                      ></View>
                       <TouchableOpacity
                         onPress={() => {
                           item.addon_items.length == 0
@@ -695,14 +732,16 @@ const TopTabWithList = ({
                           justifyContent: 'center',
                           alignItems: 'center',
                           padding: normalize(15),
-                        }}>
+                        }}
+                      >
                         <Text
                           style={{
                             fontFamily: FONTS.LatoBold,
                             color: COLORS.themeViolet,
                             fontSize: normalize(13),
                             textTransform: 'capitalize',
-                          }}>
+                          }}
+                        >
                           Add new customization
                         </Text>
                       </TouchableOpacity>
@@ -767,11 +806,13 @@ const TopTabWithList = ({
         style={{
           height: '10%',
           width: normalize(300),
-        }}>
+        }}
+      >
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={styles.tabsContainer}>
+          style={styles.tabsContainer}
+        >
           {categories?.map(renderTab)}
         </ScrollView>
       </View>
@@ -779,13 +820,14 @@ const TopTabWithList = ({
         style={{
           height: '90%',
           width: '99%',
-        }}>
+        }}
+      >
         <FlatList
           showsVerticalScrollIndicator={false}
           data={foods}
           keyExtractor={item => item.id.toString()}
           renderItem={renderItem}
-          contentContainerStyle={{padding: 10}}
+          contentContainerStyle={{ padding: 10 }}
           ListEmptyComponent={
             <Text style={styles.emptyText}>No items in this category</Text>
           }
@@ -798,9 +840,9 @@ const TopTabWithList = ({
           <View style={styles.cartDetails}>
             <View style={styles.imagePlaceholder}>
               <Image
-                source={{uri: local_cartData[0]?.image}}
+                source={{ uri: local_cartData[0]?.image }}
                 resizeMode="contain"
-                style={{height: '100%', width: '100%'}}
+                style={{ height: '100%', width: '100%' }}
               />
             </View>
             {local_cartData?.length != 1 ? (
@@ -811,11 +853,12 @@ const TopTabWithList = ({
                     position: 'absolute',
                     right: normalize(50),
                   },
-                ]}>
+                ]}
+              >
                 <Image
-                  source={{uri: local_cartData[1]?.image}}
+                  source={{ uri: local_cartData[1]?.image }}
                   resizeMode="contain"
-                  style={{height: '100%', width: '100%'}}
+                  style={{ height: '100%', width: '100%' }}
                 />
               </View>
             ) : null}
@@ -835,7 +878,8 @@ const TopTabWithList = ({
                 },
               });
             }}
-            style={styles.cartButton}>
+            style={styles.cartButton}
+          >
             <Image
               source={IMAGES.downarrow}
               resizeMode="contain"
@@ -843,7 +887,7 @@ const TopTabWithList = ({
                 height: normalize(10),
                 width: normalize(10),
                 tintColor: COLORS.white,
-                transform: [{rotate: '270deg'}],
+                transform: [{ rotate: '270deg' }],
               }}
             />
           </TouchableOpacity>
@@ -948,49 +992,49 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   ///////////////
-   floatingCart: {
-      position: 'absolute',
-      bottom: normalize(20),
-      // left: normalize(50),
-      // right: normalize(50),
-      width: normalize(130),
-      backgroundColor: COLORS.blue,
-      borderRadius: normalize(50),
-      flexDirection: 'row',
-      alignItems: 'center',
-      padding: normalize(5),
-      elevation: normalize(10),
-      alignSelf: 'center',
-    },
-    cartDetails: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      flex: 1,
-    },
-    imagePlaceholder: {
-      width: normalize(35),
-      height: normalize(35),
-      borderRadius: normalize(20),
-      marginRight: normalize(10),
-      overflow: 'hidden',
-      borderWidth: 1,
-      borderColor: COLORS.bordergrey,
-    },
-    cartText: {
-      color: COLORS.themeViolet,
-  
-      fontSize: normalize(10),
-      fontFamily: FONTS.PoppinsSemiBold,
-    },
-    cartButton: {
-      backgroundColor: COLORS.themeGreen,
-      borderRadius: normalize(20),
-      padding: normalize(5),
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    cartButtonText: {
-      color: COLORS.themeGreen,
-      fontSize: normalize(16),
-    },
+  floatingCart: {
+    position: 'absolute',
+    bottom: normalize(20),
+    // left: normalize(50),
+    // right: normalize(50),
+    width: normalize(130),
+    backgroundColor: COLORS.blue,
+    borderRadius: normalize(50),
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: normalize(5),
+    elevation: normalize(10),
+    alignSelf: 'center',
+  },
+  cartDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  imagePlaceholder: {
+    width: normalize(35),
+    height: normalize(35),
+    borderRadius: normalize(20),
+    marginRight: normalize(10),
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: COLORS.bordergrey,
+  },
+  cartText: {
+    color: COLORS.themeViolet,
+
+    fontSize: normalize(10),
+    fontFamily: FONTS.PoppinsSemiBold,
+  },
+  cartButton: {
+    backgroundColor: COLORS.themeGreen,
+    borderRadius: normalize(20),
+    padding: normalize(5),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cartButtonText: {
+    color: COLORS.themeGreen,
+    fontSize: normalize(16),
+  },
 });

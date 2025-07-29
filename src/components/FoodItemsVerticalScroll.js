@@ -27,8 +27,6 @@ const FoodItemsVerticalScroll = ({fullData = [], onCartUpdate = () => {}}) => {
   const [local_cartData, setlocal_CartData] = useState([]);
   const infiniteData = Array(100).fill(fullData).flat();
   const listRef = useRef(null);
-  console.log('kokokokokokokokokokok', fullData);
-
   const handleAddToCart = async item => {
     const quantity = 1;
     const productPrice = Number(item?.sale_price || 0);
