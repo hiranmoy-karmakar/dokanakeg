@@ -44,6 +44,7 @@ const FoodItemsVerticalScroll = ({fullData = [], onCartUpdate = () => {}}) => {
       image: item?.main_image?.large_image,
       name: item?.title,
       mrp_price: parseInt(item?.mrp),
+      type: 'restaurant',
     };
 
     try {

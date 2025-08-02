@@ -275,14 +275,14 @@ const Cart = () => {
                   </View>
                   <View style={styles.priceRow}>
                     <Text style={styles.original}>
-                      E£
+                      EGP
                       {(
-                        (item.mrp_price + item.addon_price) *
-                        item.quantity
+                        (item?.mrp_price + item?.addon_price) *
+                        item?.quantity
                       ).toFixed(2)}
                     </Text>
                     <Text style={styles.discounted}>
-                      E£{item.total_price.toFixed(2)}
+                      EGP{item?.total_price?.toFixed(2)}
                     </Text>
                   </View>
                 </View>
@@ -291,14 +291,14 @@ const Cart = () => {
 
             <View style={styles.cartVw}>
               <Text style={styles.sectionHeader}>Price Details</Text>
-              <PriceRow label="Subtotal" value={`E£${subtotal}`} />
-              <PriceRow label="Delivery Charges" value={`E£${deliveryCharge}`} />
-              <PriceRow label="Discounts" value={`-E£${discount}`} />
-              <PriceRow label="Taxes (GST/VAT)" value={`E£${taxes}`} />
-              <PriceRow label="Packaging Charges" value={`E£${packaging}`} />
-              <PriceRow label="Convenience Fee" value={`E£${convenience}`} />
-              <PriceRow label="Platform Fee" value={`E£${platformFee}`} />
-              <PriceRow label="Total Payable" value={`E£${totalPayable}`} />
+              <PriceRow label="Subtotal" value={`EGP${subtotal}`} />
+              <PriceRow label="Delivery Charges" value={`EGP${deliveryCharge}`} />
+              <PriceRow label="Discounts" value={`-EGP${discount}`} />
+              <PriceRow label="Taxes (GST/VAT)" value={`EGP${taxes}`} />
+              <PriceRow label="Packaging Charges" value={`EGP${packaging}`} />
+              <PriceRow label="Convenience Fee" value={`EGP${convenience}`} />
+              <PriceRow label="Platform Fee" value={`EGP${platformFee}`} />
+              <PriceRow label="Total Payable" value={`EGP${totalPayable}`} />
             </View>
 
             <View style={styles.deliveryVw}>
@@ -467,7 +467,7 @@ const Cart = () => {
                   justifyContent: 'center',
                 }}
               >
-                <Text style={styles.moneyTxt}>{`E£${totalPayable}`}</Text>
+                <Text style={styles.moneyTxt}>{`EGP${totalPayable}`}</Text>
                 <Text style={styles.amountTxt}>All total amount</Text>
               </View>
               <TouchableOpacity

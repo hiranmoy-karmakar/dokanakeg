@@ -47,6 +47,7 @@ const AddButton = ({
       image: data?.main_image?.large_image,
       name: data?.title,
       mrp_price: parseInt(data?.mrp),
+      type: 'restaurant',
     };
 
     try {

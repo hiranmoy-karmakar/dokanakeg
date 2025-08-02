@@ -89,6 +89,7 @@ const AddOnModal = ({
       image: fullData?.main_image?.large_image,
       name: fullData?.title,
       mrp_price: parseInt(fullData?.mrp),
+      type: 'restaurant',
     };
 
     try {
@@ -262,11 +263,11 @@ const AddOnModal = ({
                     </View>
                     <Text
                       style={{
-                        fontSize: normalize(14),
+                        fontSize: normalize(12),
                         color: COLORS.themeViolet,
                         marginLeft: normalize(10),
                       }}>
-                      E£ {item.price}
+                      EGP {item.price}
                     </Text>
                   </View>
                 </TouchableOpacity>

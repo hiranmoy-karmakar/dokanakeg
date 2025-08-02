@@ -235,6 +235,7 @@ const TopTabWithList = ({
           image: item.main_image.large_image,
           name: item?.title,
           mrp_price: parseInt(item?.mrp),
+          type: 'restaurant',
         });
       }
 
@@ -334,7 +335,7 @@ const TopTabWithList = ({
             {item.title}
           </Text>
           <View style={styles.priceRow}>
-            <Text style={styles.title}>E£{item.sale_price}</Text>
+            <Text style={styles.title}>EGP{item.sale_price}</Text>
             <Text
               style={[
                 styles.title,
@@ -346,7 +347,7 @@ const TopTabWithList = ({
                 },
               ]}
             >
-              E£{item.mrp}
+              EGP{item.mrp}
             </Text>
             <Image
               source={IMAGES.star}
@@ -635,7 +636,7 @@ const TopTabWithList = ({
                                       fontSize: normalize(14),
                                     }}
                                   >
-                                    E£{total}
+                                    EGP{total}
                                   </Text>
 
                                   <View
